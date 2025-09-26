@@ -40,6 +40,11 @@ export async function PUT(request, { params }) {
   try {
     const { slug } = await params
     if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 })
+    
+    // Check environment variables
+    console.log('SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'SET' : 'MISSING')
+    console.log('SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'MISSING')
+    
     const body = await request.json()
     
     console.log('PUT /api/cms/cities/[slug] - Received body:', JSON.stringify(body, null, 2))
