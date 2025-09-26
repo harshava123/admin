@@ -900,15 +900,24 @@ const WebsiteEdit: React.FC = () => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => {
+                onChange={async (e) => {
                   const file = e.target.files?.[0]
-                  if (file) {
-                    const reader = new FileReader()
-                    reader.onload = (event) => {
-                      const imageUrl = event.target?.result as string
-                      setHero(prev => ({ ...prev, backgroundImageUrl: imageUrl }))
+                  if (!file) return
+                  try {
+                    const form = new FormData()
+                    form.append('file', file)
+                    form.append('slug', citySlug || 'common')
+                    form.append('folder', 'hero')
+
+                    const res = await fetch('/api/upload', { method: 'POST', body: form })
+                    if (!res.ok) {
+                      const err = await res.json().catch(() => ({}))
+                      throw new Error(err.error || 'Upload failed')
                     }
-                    reader.readAsDataURL(file)
+                    const data = await res.json()
+                    setHero(prev => ({ ...prev, backgroundImageUrl: data.url }))
+                  } catch (err: any) {
+                    setError(err?.message || 'Failed to upload image')
                   }
                 }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
