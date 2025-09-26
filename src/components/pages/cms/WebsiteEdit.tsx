@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import Image from 'next/image'
 
 interface HeroContent {
   title: string
@@ -1367,14 +1368,15 @@ const WebsiteEdit: React.FC = () => {
                     <div className="mt-3">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Preview</label>
                       <div className="w-32 h-16 border border-gray-300 rounded-md flex items-center justify-center bg-gray-50">
-                        <img 
-                          src={brand.logoUrl} 
-                          alt={brand.name || 'Brand logo'} 
-                          className="max-w-full max-h-full object-contain"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none'
-                          }}
-                        />
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={brand.logoUrl}
+                            alt={brand.name || 'Brand logo'}
+                            fill
+                            className="object-contain"
+                            unoptimized
+                          />
+                        </div>
                       </div>
                       <div className="mt-2 flex gap-2">
                         <button
@@ -1699,11 +1701,15 @@ const WebsiteEdit: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Trip Image</label>
                   <div className="flex items-center gap-4">
                     {trip.image && (
-                      <img 
-                        src={trip.image} 
-                        alt={trip.title}
-                        className="w-16 h-16 object-cover rounded-lg border border-gray-300"
-                      />
+                      <div className="relative w-16 h-16 rounded-lg border border-gray-300 overflow-hidden">
+                        <Image
+                          src={trip.image}
+                          alt={trip.title}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
                     )}
             <input
               type="file"
@@ -2073,11 +2079,15 @@ const WebsiteEdit: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Trip Image</label>
                   <div className="flex items-center gap-4">
                     {trip.image && (
-                      <img 
-                        src={trip.image} 
-                        alt={trip.title}
-                        className="w-16 h-16 object-cover rounded-lg border border-gray-300"
-                      />
+                      <div className="relative w-16 h-16 rounded-lg border border-gray-300 overflow-hidden">
+                        <Image
+                          src={trip.image}
+                          alt={trip.title}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
                     )}
                     <input
                       type="file"
