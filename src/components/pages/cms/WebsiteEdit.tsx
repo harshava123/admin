@@ -893,6 +893,51 @@ const WebsiteEdit: React.FC = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://example.com/image.jpg"
             />
+            <div className="mt-3">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Or upload image
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    const reader = new FileReader()
+                    reader.onload = (event) => {
+                      const imageUrl = event.target?.result as string
+                      setHero(prev => ({ ...prev, backgroundImageUrl: imageUrl }))
+                    }
+                    reader.readAsDataURL(file)
+                  }
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {hero.backgroundImageUrl && (
+              <div className="mt-3">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
+                <div className="relative w-full h-40 rounded-md overflow-hidden border border-gray-200">
+                  <Image
+                    src={hero.backgroundImageUrl}
+                    alt="Hero background preview"
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                </div>
+                <div className="mt-2">
+                  <button
+                    type="button"
+                    onClick={() => setHero(prev => ({ ...prev, backgroundImageUrl: '' }))}
+                    className="text-xs text-red-600 hover:text-red-800"
+                  >
+                    Remove Image
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
