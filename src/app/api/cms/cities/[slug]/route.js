@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabaseClient'
+import { supabaseServer } from '@/lib/supabaseServer'
 
 // Table: city_content
 // Columns: slug (pk text), hero jsonb, about jsonb, gallery jsonb, contact jsonb, tripOptions jsonb, usp jsonb, faq jsonb, groupCta jsonb, updated_at timestamptz
@@ -9,7 +9,7 @@ export async function GET(request, { params }) {
     const { slug } = await params
     if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 })
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('city_content')
       .select('*')
       .eq('slug', slug)
@@ -41,6 +41,8 @@ export async function PUT(request, { params }) {
     const { slug } = await params
     if (!slug) return NextResponse.json({ error: 'slug required' }, { status: 400 })
     const body = await request.json()
+    
+    console.log('PUT /api/cms/cities/[slug] - Received body:', JSON.stringify(body, null, 2))
 
     // Build payload only with provided fields
     const payload = {
@@ -60,7 +62,9 @@ export async function PUT(request, { params }) {
     if (body.reviews !== undefined) payload.reviews = body.reviews
     if (body.brands !== undefined) payload.brands = body.brands
 
-    const { data, error } = await supabase
+    console.log('PUT /api/cms/cities/[slug] - Final payload:', JSON.stringify(payload, null, 2))
+
+    const { data, error } = await supabaseServer
       .from('city_content')
       .upsert(payload, { onConflict: 'slug' })
       .select('*')

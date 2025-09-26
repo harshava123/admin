@@ -761,18 +761,29 @@ const WebsiteEdit: React.FC = () => {
     if (!citySlug) return
     try {
       setSaving(true)
+      console.log(`Saving ${sectionName} for ${citySlug}:`, data)
+      
       const res = await fetch(`/api/cms/cities/${citySlug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       })
+      
+      console.log(`Response status: ${res.status}`)
+      
       if (!res.ok) {
         const responseData = await res.json()
+        console.error('Save failed:', responseData)
         throw new Error(responseData.error || 'Failed to save')
       }
+      
+      const result = await res.json()
+      console.log('Save successful:', result)
+      
       setError(null)
       alert(`${sectionName} saved successfully`)
     } catch (e: any) {
+      console.error('Save error:', e)
       setError(e.message || `Failed to save ${sectionName}`)
     } finally {
       setSaving(false)
