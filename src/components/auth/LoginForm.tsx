@@ -20,7 +20,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
-  const { login, checkFirstLogin } = useAuth()
+  const { login, checkFirstLogin, user } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
