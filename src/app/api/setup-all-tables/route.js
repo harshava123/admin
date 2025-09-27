@@ -79,9 +79,11 @@ export async function POST() {
               name TEXT NOT NULL,
               email TEXT,
               phone TEXT,
-              location TEXT,
-              role TEXT DEFAULT 'Agent',
+              destination TEXT,
+              role TEXT DEFAULT 'employee',
               status TEXT DEFAULT 'Active' CHECK (status IN ('Active', 'Inactive')),
+              password_hash TEXT,
+              is_first_login BOOLEAN DEFAULT true,
               inserted_at TIMESTAMPTZ DEFAULT NOW(),
               updated_at TIMESTAMPTZ DEFAULT NOW()
             );

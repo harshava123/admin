@@ -16,11 +16,20 @@ export async function GET() {
         name text not null,
         email text,
         phone text,
-        location text,
-        role text default 'Agent',
+        destination text,
+        role text default 'employee',
         status text default 'Active',
+        password_hash text,
+        is_first_login boolean default true,
         inserted_at timestamptz default now()
       );
+    `)
+    
+    // Add missing columns if table already exists
+    await client.query(`
+      alter table public.employees add column if not exists destination text;
+      alter table public.employees add column if not exists password_hash text;
+      alter table public.employees add column if not exists is_first_login boolean default true;
     `)
     return NextResponse.json({ ok: true })
   } catch (e) {

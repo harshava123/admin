@@ -28,15 +28,26 @@ async function main() {
         name text not null,
         email text,
         phone text,
-        location text,
-        role text default 'Agent',
+        destination text,
+        role text default 'employee',
         status text default 'Active',
+        password_hash text,
+        is_first_login boolean default true,
         inserted_at timestamptz default now()
       );
+    `
+    
+    const alterSql = `
+      alter table public.employees add column if not exists destination text;
+      alter table public.employees add column if not exists password_hash text;
+      alter table public.employees add column if not exists is_first_login boolean default true;
     `
 
     console.log('Creating table public.employees if not exists...')
     await client.query(sql)
+    
+    console.log('Adding missing columns if needed...')
+    await client.query(alterSql)
 
     console.log('Done. ✅')
   } catch (e) {
