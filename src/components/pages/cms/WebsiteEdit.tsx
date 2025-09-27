@@ -283,6 +283,7 @@ const WebsiteEdit: React.FC = () => {
   })
 
   const [selectedUspItem, setSelectedUspItem] = useState<string>('1')
+  const [selectedReview, setSelectedReview] = useState<string>('')
 
   // File upload states for brands
   const [brandImageFiles, setBrandImageFiles] = useState<{ [brandId: string]: File | null }>({})
@@ -763,10 +764,25 @@ const WebsiteEdit: React.FC = () => {
       setSaving(true)
       console.log(`Saving ${sectionName} for ${citySlug}:`, data)
       
+      // Debug: Check for base64 data in payload
+      const payloadString = JSON.stringify(data)
+      const hasBase64 = payloadString.includes('data:image')
+      console.log(`Saving ${sectionName} - Payload size: ${payloadString.length} bytes`)
+      console.log(`Saving ${sectionName} - Contains base64: ${hasBase64}`)
+      
+      if (hasBase64) {
+        console.warn('WARNING: Payload contains base64 data! This may cause 413 errors.')
+        // Find and log base64 data
+        const base64Matches = payloadString.match(/data:image[^"]+/g)
+        if (base64Matches) {
+          console.log('Base64 data found:', base64Matches.map(match => match.substring(0, 50) + '...'))
+        }
+      }
+      
       const res = await fetch(`/api/cms/cities/${citySlug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: payloadString
       })
       
       console.log(`Response status: ${res.status}`)
@@ -1035,122 +1051,158 @@ const WebsiteEdit: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Reviews ({reviews.reviews.length})
             </label>
-            <div className="space-y-4">
-              {reviews.reviews.map((review, index) => (
-                <div key={review.id} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-md font-medium text-gray-800">Review {index + 1}</h4>
-                    <button
-                      onClick={() => setReviews(prev => ({
-                        ...prev,
-                        reviews: prev.reviews.filter(r => r.id !== review.id)
-                      }))}
-                      className="text-red-600 hover:text-red-800 text-sm"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        value={review.name}
-                        onChange={(e) => setReviews(prev => ({
-                          ...prev,
-                          reviews: prev.reviews.map(r => 
-                            r.id === review.id ? { ...r, name: e.target.value } : r
-                          )
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Reviewer name"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Review Text
-                      </label>
-                      <textarea
-                        value={review.review}
-                        onChange={(e) => setReviews(prev => ({
-                          ...prev,
-                          reviews: prev.reviews.map(r => 
-                            r.id === review.id ? { ...r, review: e.target.value } : r
-                          )
-                        }))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        rows={3}
-                        placeholder="Review text"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Image 1 URL
-                        </label>
-                        <input
-                          type="url"
-                          value={review.images[0]?.src || ''}
-                          onChange={(e) => setReviews(prev => ({
-                            ...prev,
-                            reviews: prev.reviews.map(r => 
-                              r.id === review.id ? { 
-                                ...r, 
-                                images: [
-                                  { ...r.images[0], src: e.target.value },
-                                  r.images[1] || { src: '', alt: '' }
-                                ]
-                              } : r
-                            )
-                          }))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="First image URL"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Image 2 URL
-                        </label>
-                        <input
-                          type="url"
-                          value={review.images[1]?.src || ''}
-                          onChange={(e) => setReviews(prev => ({
-                            ...prev,
-                            reviews: prev.reviews.map(r => 
-                              r.id === review.id ? { 
-                                ...r, 
-                                images: [
-                                  r.images[0] || { src: '', alt: '' },
-                                  { ...r.images[1], src: e.target.value }
-                                ]
-                              } : r
-                            )
-                          }))}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Second image URL"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            
+            {/* Review Selector Dropdown */}
+            <div className="mb-4">
+              <select
+                value={selectedReview}
+                onChange={(e) => setSelectedReview(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a review to edit</option>
+                {reviews.reviews.map((review, index) => (
+                  <option key={review.id} value={review.id}>
+                    Review {index + 1} - {review.name || 'Unnamed Review'}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Add New Review Button */}
+            <div className="mb-4">
               <button
-                onClick={() => setReviews(prev => ({
-                  ...prev,
-                  reviews: [...prev.reviews, {
+                onClick={() => {
+                  const newReview = {
                     id: Date.now().toString(),
                     name: '',
                     review: '',
                     images: [{ src: '', alt: '' }, { src: '', alt: '' }]
-                  }]
-                }))}
+                  }
+                  setReviews(prev => ({
+                    ...prev,
+                    reviews: [...prev.reviews, newReview]
+                  }))
+                  setSelectedReview(newReview.id)
+                }}
                 className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-gray-400 hover:text-gray-700"
               >
                 Add New Review
               </button>
             </div>
+
+            {/* Selected Review Edit Form */}
+            {selectedReview && reviews.reviews.find(r => r.id === selectedReview) && (
+              <div className="border border-gray-200 rounded-lg p-4">
+                {(() => {
+                  const review = reviews.reviews.find(r => r.id === selectedReview)!
+                  const index = reviews.reviews.findIndex(r => r.id === selectedReview)
+                  
+                  return (
+                    <>
+                      <div className="flex justify-between items-center mb-4">
+                        <h4 className="text-md font-medium text-gray-800">Review {index + 1}</h4>
+                        <button
+                          onClick={() => {
+                            setReviews(prev => ({
+                              ...prev,
+                              reviews: prev.reviews.filter(r => r.id !== selectedReview)
+                            }))
+                            setSelectedReview('')
+                          }}
+                          className="text-red-600 hover:text-red-800 text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            value={review.name}
+                            onChange={(e) => setReviews(prev => ({
+                              ...prev,
+                              reviews: prev.reviews.map(r => 
+                                r.id === review.id ? { ...r, name: e.target.value } : r
+                              )
+                            }))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Reviewer name"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Review Text
+                          </label>
+                          <textarea
+                            value={review.review}
+                            onChange={(e) => setReviews(prev => ({
+                              ...prev,
+                              reviews: prev.reviews.map(r => 
+                                r.id === review.id ? { ...r, review: e.target.value } : r
+                              )
+                            }))}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            rows={3}
+                            placeholder="Review text"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Image 1 URL
+                            </label>
+                            <input
+                              type="url"
+                              value={review.images[0]?.src || ''}
+                              onChange={(e) => setReviews(prev => ({
+                                ...prev,
+                                reviews: prev.reviews.map(r => 
+                                  r.id === review.id ? { 
+                                    ...r, 
+                                    images: [
+                                      { ...r.images[0], src: e.target.value },
+                                      r.images[1] || { src: '', alt: '' }
+                                    ]
+                                  } : r
+                                )
+                              }))}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="First image URL"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Image 2 URL
+                            </label>
+                            <input
+                              type="url"
+                              value={review.images[1]?.src || ''}
+                              onChange={(e) => setReviews(prev => ({
+                                ...prev,
+                                reviews: prev.reviews.map(r => 
+                                  r.id === review.id ? { 
+                                    ...r, 
+                                    images: [
+                                      r.images[0] || { src: '', alt: '' },
+                                      { ...r.images[1], src: e.target.value }
+                                    ]
+                                  } : r
+                                )
+                              }))}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Second image URL"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )
+                })()}
+              </div>
+            )}
           </div>
         </div>
       </div>
