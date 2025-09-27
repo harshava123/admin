@@ -7,7 +7,7 @@ interface User {
   id: string
   name: string
   email: string
-  role: 'admin' | 'employee'
+  role: 'admin' | 'employee' | 'Super Admin' | 'Agent' | 'Employer'
   user_metadata?: any
 }
 
@@ -15,7 +15,7 @@ interface AuthContextType {
   user: User | null
   token: string | null
   login: (email: string, password: string) => Promise<void>
-  signup: (name: string, email: string, password: string, role: 'admin' | 'employee') => Promise<void>
+  signup: (name: string, email: string, password: string, role: 'admin' | 'employee' | 'Super Admin' | 'Agent' | 'Employer') => Promise<void>
   logout: () => void
   loading: boolean
   isAuthenticated: boolean
