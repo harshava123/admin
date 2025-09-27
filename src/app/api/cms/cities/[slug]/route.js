@@ -48,6 +48,7 @@ export async function PUT(request, { params }) {
     const body = await request.json()
     
     console.log('PUT /api/cms/cities/[slug] - Received body:', JSON.stringify(body, null, 2))
+    console.log('Upload route deployment test - v1.0')
 
     // Build payload only with provided fields
     const payload = {
