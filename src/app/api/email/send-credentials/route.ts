@@ -252,13 +252,17 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error sending employee credentials email:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorCode = (error as any)?.code || 'UNKNOWN'
+    const errorStack = error instanceof Error ? error.stack : 'No stack trace'
+    
     console.error('Error details:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack
+      message: errorMessage,
+      code: errorCode,
+      stack: errorStack
     })
     return NextResponse.json(
-      { error: `Failed to send email: ${error.message}` },
+      { error: `Failed to send email: ${errorMessage}` },
       { status: 500 }
     )
   }
