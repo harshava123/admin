@@ -161,9 +161,37 @@ const LOCATIONS: { slug: CitySlug; name: string }[] = [
 const WebsiteEdit: React.FC = () => {
   const [saving, setSaving] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [filteredSections, setFilteredSections] = useState<string[]>([])
 
   // Selected city (none at first → show location cards)
   const [citySlug, setCitySlug] = useState<CitySlug | ''>('')
+
+  // Search functionality
+  useEffect(() => {
+    const handleSearch = (event: any) => {
+      const query = event.detail.toLowerCase()
+      setSearchQuery(query)
+      
+      if (!query) {
+        setFilteredSections([])
+        return
+      }
+      
+      const sections = [
+        'header', 'hero', 'trip options', 'reviews', 'usp', 'brands', 'faq'
+      ]
+      
+      const filtered = sections.filter(section => 
+        section.toLowerCase().includes(query)
+      )
+      
+      setFilteredSections(filtered)
+    }
+    
+    window.addEventListener('searchQuery', handleSearch)
+    return () => window.removeEventListener('searchQuery', handleSearch)
+  }, [])
 
   // Hero section
   const [hero, setHero] = useState<HeroContent>({
@@ -844,6 +872,12 @@ const WebsiteEdit: React.FC = () => {
     )
   }
 
+  // Helper function to check if section should be visible
+  const isSectionVisible = (sectionName: string) => {
+    if (!searchQuery) return true
+    return filteredSections.includes(sectionName.toLowerCase())
+  }
+
   // City selected → show the existing editor UI for that scope
   return (
     <div className="space-y-4">
@@ -876,6 +910,7 @@ const WebsiteEdit: React.FC = () => {
       )}
 
       {/* Header Section */}
+      {isSectionVisible('header') && (
       <div className="bg-white border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-medium text-gray-900">Header Section</h2>
@@ -947,8 +982,10 @@ const WebsiteEdit: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* Hero Section */}
+      {isSectionVisible('hero') && (
       <div className="bg-white border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-medium text-gray-900">Hero Section</h2>
@@ -1085,8 +1122,10 @@ const WebsiteEdit: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* Trip Options Section */}
+      {isSectionVisible('trip options') && (
       <div className="bg-white border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-medium text-gray-900">Trip Options Section</h2>
@@ -2117,8 +2156,10 @@ const WebsiteEdit: React.FC = () => {
           )}
         </div>
       </div>
+      )}
 
       {/* Reviews Section */}
+      {isSectionVisible('reviews') && (
       <div className="bg-white border border-gray-200 rounded-lg p-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-medium text-gray-900">Reviews Section</h2>
@@ -2314,8 +2355,10 @@ const WebsiteEdit: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* USP Section */}
+      {isSectionVisible('usp') && (
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">USP Section</h2>
         <div className="flex justify-end mb-4">
@@ -2431,8 +2474,10 @@ const WebsiteEdit: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* Brands Section */}
+      {isSectionVisible('brands') && (
       <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Brands Section</h2>
         <div className="flex justify-end mb-4">
@@ -2685,8 +2730,10 @@ const WebsiteEdit: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* FAQ Section */}
+      {isSectionVisible('faq') && (
         <div className="bg-white shadow rounded-lg p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">FAQ Section</h2>
         <div className="flex justify-end mb-4">
@@ -2795,6 +2842,7 @@ const WebsiteEdit: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
     </div>
   )
 }

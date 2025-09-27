@@ -65,3 +65,15 @@ export const XMarkIcon: React.FC<IconProps> = ({ className = "h-6 w-6" }) => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
   </svg>
 )
+
+export const ChevronLeftIcon: React.FC<IconProps> = ({ className = "h-5 w-5" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+  </svg>
+)
+
+export const ChevronRightIcon: React.FC<IconProps> = ({ className = "h-5 w-5" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  </svg>
+)
