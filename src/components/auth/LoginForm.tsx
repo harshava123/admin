@@ -48,7 +48,13 @@ const LoginForm: React.FC<LoginFormProps> = () => {
       if (isFirstLogin) {
         setShowChangePasswordModal(true)
       } else {
-        window.location.href = '/'
+        // Redirect based on user role
+        const userRole = user?.role
+        if (userRole === 'employee') {
+          window.location.href = '/employee'
+        } else {
+          window.location.href = '/'
+        }
       }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.')
@@ -59,7 +65,13 @@ const LoginForm: React.FC<LoginFormProps> = () => {
 
   const handlePasswordChangeSuccess = () => {
     setShowChangePasswordModal(false)
-    window.location.href = '/'
+    // Redirect based on user role
+    const userRole = user?.role
+    if (userRole === 'employee') {
+      window.location.href = '/employee'
+    } else {
+      window.location.href = '/'
+    }
   }
 
   return (

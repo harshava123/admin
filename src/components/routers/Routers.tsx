@@ -1,6 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import AdminDashboard from '../pages/AdminDashboard'
+import Employeedashboard from '../pages/Employeedashboard'
 import Leads from '../pages/crm/Leads'
 import Bookings from '../pages/crm/Bookings'
 import Payments from '../pages/crm/Payments'
@@ -23,6 +24,11 @@ const Routers: React.FC = () => {
       <Route path="/" element={
         <ProtectedRoute>
           <AdminDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/employee" element={
+        <ProtectedRoute>
+          <Employeedashboard />
         </ProtectedRoute>
       } />
       <Route path="/leads" element={
