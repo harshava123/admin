@@ -200,9 +200,13 @@ const createEmployeeCredentialsTemplate = (data: EmployeeCredentials) => {
 export async function POST(request: NextRequest) {
   try {
     // Check if environment variables are set
+    console.log('GMAIL_USER:', process.env.GMAIL_USER ? 'Set' : 'Not set')
+    console.log('GMAIL_APP_PASSWORD:', process.env.GMAIL_APP_PASSWORD ? 'Set' : 'Not set')
+    
     if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+      console.error('Email service not configured - missing environment variables')
       return NextResponse.json(
-        { error: 'Email service not configured' },
+        { error: 'Email service not configured - missing GMAIL_USER or GMAIL_APP_PASSWORD' },
         { status: 500 }
       )
     }
@@ -225,6 +229,9 @@ export async function POST(request: NextRequest) {
       html: createEmployeeCredentialsTemplate(data),
     }
 
+    console.log('Sending email to:', data.email)
+    console.log('From:', process.env.GMAIL_USER)
+    
     const info = await transporter.sendMail(mailOptions)
     console.log('Employee credentials email sent:', info.messageId)
     
@@ -235,8 +242,13 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error sending employee credentials email:', error)
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    })
     return NextResponse.json(
-      { error: 'Failed to send email' },
+      { error: `Failed to send email: ${error.message}` },
       { status: 500 }
     )
   }
