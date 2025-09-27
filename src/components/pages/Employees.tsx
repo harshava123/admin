@@ -116,23 +116,7 @@ const Employees: React.FC = () => {
     
     const passwordHash = await bcrypt.hash(newEmployee.password, 10)
 
-    // First create Supabase Auth user
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email: newEmployee.email,
-      password: newEmployee.password,
-      options: {
-        data: {
-          name: newEmployee.name,
-          role: 'employee'
-        }
-      }
-    })
-
-    if (authError) {
-      alert(`Failed to create user account: ${authError.message}`)
-      return
-    }
-
+    // Create employee record first
     const payload = { 
       name: newEmployee.name,
       email: newEmployee.email,
@@ -140,16 +124,68 @@ const Employees: React.FC = () => {
       destination: newEmployee.destination,
       role: 'employee', 
       status: 'Active',
-      password_hash: passwordHash,
-      supabase_user_id: authData.user?.id
+      password_hash: passwordHash
     }
+    
     const { data, error } = await supabase
       .from('employees')
       .insert(payload)
       .select()
       .single()
     
-    if (!error && data) {
+    if (error) {
+      let errorMessage = 'Unknown error'
+      if (error.message) {
+        if (error.message.includes('duplicate key value violates unique constraint "employees_email_key"')) {
+          errorMessage = 'An employee with this email already exists. Please use a different email address.'
+        } else {
+          errorMessage = error.message
+        }
+      }
+      alert(`Failed to save employee: ${errorMessage}`)
+      return
+    }
+
+    if (!data) {
+      alert('Failed to save employee: No data returned')
+      return
+    }
+
+    // Create Supabase Auth user using admin API
+    try {
+      console.log('Creating Supabase Auth user for:', newEmployee.email)
+      const authResponse = await fetch('/api/auth/create-employee-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: newEmployee.email,
+          password: newEmployee.password,
+          name: newEmployee.name,
+          employeeId: data.id
+        }),
+      })
+
+      const authResult = await authResponse.json()
+      
+      if (!authResponse.ok) {
+        console.error('Auth user creation failed:', authResult)
+        // Employee was created but auth user failed - continue with email sending
+      } else {
+        console.log('Auth user created successfully:', authResult)
+        // Update employee with Supabase user ID
+        await supabase
+          .from('employees')
+          .update({ supabase_user_id: authResult.userId })
+          .eq('id', data.id)
+      }
+    } catch (authError) {
+      console.error('Error creating auth user:', authError)
+      // Continue with email sending even if auth user creation fails
+    }
+
+    if (data) {
       // Send email with credentials
       try {
         const emailResponse = await fetch('/api/email/send-credentials', {
