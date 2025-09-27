@@ -99,6 +99,21 @@ const Employees: React.FC = () => {
       return
     }
     
+    // Check if email already exists
+    const { data: existingEmployees, error: checkError } = await supabase
+      .from('employees')
+      .select('email')
+      .eq('email', newEmployee.email)
+    
+    if (checkError) {
+      console.error('Error checking email:', checkError)
+    }
+    
+    if (existingEmployees && existingEmployees.length > 0) {
+      alert('An employee with this email already exists. Please use a different email address.')
+      return
+    }
+    
     const passwordHash = await bcrypt.hash(newEmployee.password, 10)
 
     const payload = { 
@@ -168,7 +183,15 @@ const Employees: React.FC = () => {
         alert('Employee created successfully! However, there was an issue sending the email. Please share credentials manually.')
       }
     } else {
-      alert(`Failed to save employee: ${error?.message || 'Unknown error'}`)
+      let errorMessage = 'Unknown error'
+      if (error?.message) {
+        if (error.message.includes('duplicate key value violates unique constraint "employees_email_key"')) {
+          errorMessage = 'An employee with this email already exists. Please use a different email address.'
+        } else {
+          errorMessage = error.message
+        }
+      }
+      alert(`Failed to save employee: ${errorMessage}`)
     }
   }
 

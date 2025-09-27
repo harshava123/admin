@@ -232,6 +232,15 @@ export async function POST(request: NextRequest) {
     console.log('Sending email to:', data.email)
     console.log('From:', process.env.GMAIL_USER)
     
+    // Test the connection first
+    try {
+      await transporter.verify()
+      console.log('SMTP connection verified successfully')
+    } catch (verifyError) {
+      console.error('SMTP connection failed:', verifyError)
+      throw new Error(`SMTP connection failed: ${verifyError.message}`)
+    }
+    
     const info = await transporter.sendMail(mailOptions)
     console.log('Employee credentials email sent:', info.messageId)
     
