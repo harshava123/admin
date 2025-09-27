@@ -3,6 +3,8 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Image from 'next/image'
+import logo from '../../assets/images/logo.png'
+import travelIllustration from '../../assets/images/in.png'
 import { EyeIcon, EyeSlashIcon } from '../ui/Icons'
 
 interface SignupFormProps {
@@ -95,7 +97,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
           <div className="text-center mb-8">
             <div className="mb-4">
               <Image 
-                src="/logo.png" 
+                src={logo} 
                 alt="Travloger" 
                 width={200} 
                 height={40} 
@@ -103,7 +105,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
               />
             </div>
             <p className="text-lg opacity-90 flex items-center justify-center">
-              You travel, We capture
+              
               <svg className="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
               </svg>
@@ -112,78 +114,32 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
           
           {/* Travel Illustration */}
           <div className="w-full max-w-md">
-            <svg viewBox="0 0 400 300" className="w-full h-auto">
-              {/* Background elements */}
-              <circle cx="80" cy="60" r="3" fill="white" opacity="0.6" />
-              <circle cx="320" cy="80" r="2" fill="white" opacity="0.4" />
-              <circle cx="350" cy="120" r="2.5" fill="white" opacity="0.5" />
-              
-              {/* Clouds */}
-              <path d="M50 50 Q60 40 70 50 Q80 40 90 50 Q80 60 70 50 Q60 60 50 50" fill="white" opacity="0.3" />
-              <path d="M300 40 Q310 30 320 40 Q330 30 340 40 Q330 50 320 40 Q310 50 300 40" fill="white" opacity="0.3" />
-              
-              {/* Location pins */}
-              <g fill="white" opacity="0.7">
-                <path d="M100 200 L105 190 L110 200 Z" />
-                <path d="M280 180 L285 170 L290 180 Z" />
-                <path d="M150 220 L155 210 L160 220 Z" />
-              </g>
-              
-              {/* Grass/foliage */}
-              <path d="M0 280 L50 270 L100 280 L150 270 L200 280 L250 270 L300 280 L350 270 L400 280 L400 300 L0 300 Z" fill="white" opacity="0.2" />
-              
-              {/* Main travel scene */}
-              <g stroke="white" strokeWidth="2" fill="none">
-                {/* Person */}
-                <circle cx="200" cy="180" r="8" />
-                <path d="M200 188 L200 220" />
-                <path d="M200 200 L185 210" />
-                <path d="M200 200 L215 210" />
-                <path d="M200 220 L185 240" />
-                <path d="M200 220 L215 240" />
-                
-                {/* Document/Map */}
-                <rect x="185" y="160" width="15" height="20" rx="2" />
-                <path d="M190 165 L195 165" />
-                <path d="M190 170 L195 170" />
-                <path d="M190 175 L195 175" />
-                
-                {/* Suitcase 1 */}
-                <rect x="150" y="200" width="25" height="15" rx="2" />
-                <rect x="152" y="202" width="21" height="11" rx="1" />
-                <circle cx="160" cy="210" r="1" />
-                <circle cx="165" cy="210" r="1" />
-                
-                {/* Suitcase 2 */}
-                <rect x="225" y="205" width="20" height="12" rx="2" />
-                <rect x="227" y="207" width="16" height="8" rx="1" />
-                
-                {/* Map/Route background */}
-                <rect x="120" y="120" width="160" height="100" rx="5" strokeDasharray="5,5" />
-                <path d="M140 140 L180 160 L220 150 L260 170 L300 160" strokeDasharray="3,3" />
-                <circle cx="220" cy="150" r="3" fill="white" />
-                <text x="225" y="155" fontSize="8" fill="white">X</text>
-              </g>
-            </svg>
+            <Image 
+              src={travelIllustration} 
+              alt="Travel illustration" 
+              width={400} 
+              height={300} 
+              className="w-full h-auto"
+            />
           </div>
         </div>
       </div>
       
       {/* Right Panel - Signup Form */}
-      <div className="w-full lg:w-1/2 bg-black flex items-center justify-center px-8 py-12">
+      <div className="w-full lg:w-1/2 bg-black flex items-center justify-center px-8 py-4">
         <div className="w-full max-w-md">
-          <h2 className="text-3xl font-bold text-white mb-8">Sign Up</h2>
+          <h2 className="text-xl font-bold text-white mb-4">Sign Up</h2>
         
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-3" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-900/20 border border-red-500/30 text-red-300 px-4 py-3 rounded-md text-sm">
                 {error}
               </div>
             )}
             
-            <div className="space-y-4">
+            <div className="space-y-2">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
+                <label htmlFor="name" className="block text-xs font-medium text-white mb-1">
                   Full Name
                 </label>
                 <input
@@ -194,13 +150,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full px-3 py-1.5 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                   placeholder="Enter your full name"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+                <label htmlFor="email" className="block text-xs font-medium text-white mb-1">
                   Email
                 </label>
                 <input
@@ -211,13 +167,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full px-3 py-1.5 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                   placeholder="Enter your email"
                 />
               </div>
 
               <div>
-                <label htmlFor="role" className="block text-sm font-medium text-white mb-2">
+                <label htmlFor="role" className="block text-xs font-medium text-white mb-1">
                   Role
                 </label>
                 <select
@@ -225,7 +181,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                   name="role"
                   value={formData.role}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full px-3 py-1.5 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                 >
                   <option value="employee">Employee</option>
                   <option value="admin">Admin</option>
@@ -233,7 +189,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
               </div>
               
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
+                <label htmlFor="password" className="block text-xs font-medium text-white mb-1">
                   Password
                 </label>
                 <div className="relative">
@@ -245,7 +201,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 pr-12 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    className="w-full px-3 py-1.5 pr-10 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                     placeholder="Enter your password"
                   />
                   <button
@@ -254,16 +210,16 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                      <EyeSlashIcon className="h-4 w-4 text-gray-400" />
                     ) : (
-                      <EyeIcon className="h-5 w-5 text-gray-400" />
+                      <EyeIcon className="h-4 w-4 text-gray-400" />
                     )}
                   </button>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-white mb-2">
+                <label htmlFor="confirmPassword" className="block text-xs font-medium text-white mb-1">
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -275,7 +231,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 pr-12 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    className="w-full px-3 py-1.5 pr-10 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                     placeholder="Confirm your password"
                   />
                   <button
@@ -284,9 +240,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   >
                     {showConfirmPassword ? (
-                      <EyeSlashIcon className="h-5 w-5 text-gray-400" />
+                      <EyeSlashIcon className="h-4 w-4 text-gray-400" />
                     ) : (
-                      <EyeIcon className="h-5 w-5 text-gray-400" />
+                      <EyeIcon className="h-4 w-4 text-gray-400" />
                     )}
                   </button>
                 </div>
@@ -297,11 +253,11 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                     Creating account...
                   </div>
                 ) : (
@@ -311,7 +267,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
             </div>
 
             <div className="text-center">
-              <p className="text-sm text-gray-400">
+              <p className="text-xs text-gray-400">
                 Already have an account?{' '}
                 <button
                   type="button"

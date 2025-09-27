@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server'
 import { supabaseServer } from '@/lib/supabaseServer'
+import bcrypt from 'bcryptjs'
 
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json()
+    
+    console.log('Login attempt:', { email, password: password ? '***' : 'missing' })
 
     if (!email || !password) {
       return NextResponse.json(
@@ -12,51 +15,53 @@ export async function POST(request: Request) {
       )
     }
 
-    // TODO: Implement proper authentication logic
-    // For now, we'll create a simple mock authentication
-    // In production, you should:
-    // 1. Hash passwords using bcrypt
-    // 2. Verify credentials against database
-    // 3. Generate JWT tokens
-    // 4. Implement proper session management
+    // Find user in employees table
+    const { data: user, error: userError } = await supabaseServer
+      .from('employees')
+      .select('id, name, email, role, status, password_hash')
+      .eq('email', email)
+      .eq('status', 'Active')
+      .single()
 
-    // Mock user data - replace with actual database query
-    const mockUsers = [
-      {
-        id: '1',
-        name: 'Admin User',
-        email: 'admin@travloger.com',
-        password: 'admin123', // In production, this should be hashed
-        role: 'admin'
-      },
-      {
-        id: '2',
-        name: 'Employee User',
-        email: 'employee@travloger.com',
-        password: 'employee123', // In production, this should be hashed
-        role: 'employee'
-      }
-    ]
-
-    const user = mockUsers.find(u => u.email === email && u.password === password)
-
-    if (!user) {
+    if (userError || !user) {
+      console.log('User not found or inactive:', userError?.message)
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
       )
     }
 
-    // Generate a simple token (in production, use JWT)
-    const token = Buffer.from(JSON.stringify({ userId: user.id, role: user.role })).toString('base64')
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash)
+    
+    if (!isPasswordValid) {
+      console.log('Invalid password for user:', email)
+      return NextResponse.json(
+        { error: 'Invalid email or password' },
+        { status: 401 }
+      )
+    }
+
+    // Generate token
+    const token = Buffer.from(JSON.stringify({ 
+      userId: user.id, 
+      role: user.role.toLowerCase() 
+    })).toString('base64')
+
+    console.log('Login successful:', { id: user.id, email: user.email, role: user.role })
 
     // Return user data without password
-    const { password: _, ...userWithoutPassword } = user
+    const { password_hash, ...userWithoutPassword } = user
 
     return NextResponse.json({
       success: true,
       token,
-      user: userWithoutPassword
+      user: {
+        id: user.id.toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role.toLowerCase()
+      }
     })
 
   } catch (error) {

@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server'
 import { supabaseServer } from '@/lib/supabaseServer'
+import bcrypt from 'bcryptjs'
 
 export async function POST(request: Request) {
   try {
     const { name, email, password, role } = await request.json()
+
+    console.log('Signup attempt:', { name, email, role })
 
     if (!name || !email || !password || !role) {
       return NextResponse.json(
@@ -26,31 +29,61 @@ export async function POST(request: Request) {
       )
     }
 
-    // TODO: Implement proper user creation logic
-    // For now, we'll create a simple mock user creation
-    // In production, you should:
-    // 1. Check if user already exists
-    // 2. Hash password using bcrypt
-    // 3. Store user in database
-    // 4. Generate JWT tokens
-    // 5. Send verification email
+    // Check if user already exists
+    const { data: existingUser, error: checkError } = await supabaseServer
+      .from('employees')
+      .select('id, email')
+      .eq('email', email)
+      .single()
 
-    // Mock user creation - replace with actual database insertion
-    const newUser = {
-      id: Date.now().toString(),
-      name,
-      email,
-      role,
-      createdAt: new Date().toISOString()
+    if (existingUser) {
+      return NextResponse.json(
+        { error: 'User with this email already exists' },
+        { status: 409 }
+      )
     }
 
-    // Generate a simple token (in production, use JWT)
-    const token = Buffer.from(JSON.stringify({ userId: newUser.id, role: newUser.role })).toString('base64')
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10)
+
+    // Create user in employees table
+    const { data: newUser, error: insertError } = await supabaseServer
+      .from('employees')
+      .insert({
+        name,
+        email,
+        role: role === 'admin' ? 'Admin' : 'Agent', // Map to database role values
+        status: 'Active',
+        password_hash: passwordHash
+      })
+      .select('id, name, email, role, status')
+      .single()
+
+    if (insertError) {
+      console.error('Database insert error:', insertError)
+      return NextResponse.json(
+        { error: 'Failed to create user account' },
+        { status: 500 }
+      )
+    }
+
+    // Generate token
+    const token = Buffer.from(JSON.stringify({ 
+      userId: newUser.id, 
+      role: newUser.role.toLowerCase() 
+    })).toString('base64')
+
+    console.log('User created successfully:', { id: newUser.id, email: newUser.email, role: newUser.role })
 
     return NextResponse.json({
       success: true,
       token,
-      user: newUser
+      user: {
+        id: newUser.id.toString(),
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role.toLowerCase()
+      }
     })
 
   } catch (error) {
