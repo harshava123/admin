@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Image from 'next/image'
 import logo from '../../assets/images/logo.png'
 import travelIllustration from '../../assets/images/in.png'
@@ -20,7 +20,6 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
-  const navigate = useNavigate()
   const { login, checkFirstLogin } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +48,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
       if (isFirstLogin) {
         setShowChangePasswordModal(true)
       } else {
-        navigate('/')
+        window.location.href = '/'
       }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.')
@@ -60,7 +59,7 @@ const LoginForm: React.FC<LoginFormProps> = () => {
 
   const handlePasswordChangeSuccess = () => {
     setShowChangePasswordModal(false)
-    navigate('/')
+    window.location.href = '/'
   }
 
   return (
