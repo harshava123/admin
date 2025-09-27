@@ -34,6 +34,14 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: 'file is required' }, { status: 400 })
 		}
 
+		// Check file size (Vercel limit is ~4.5MB for serverless functions)
+		const maxSize = 4 * 1024 * 1024 // 4MB limit
+		if (file.size > maxSize) {
+			return NextResponse.json({ 
+				error: `File too large. Maximum size is ${maxSize / (1024 * 1024)}MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB.` 
+			}, { status: 413 })
+		}
+
 		const supabase = createClient(supabaseUrl, serviceKey)
 
 		// Determine bucket based on path

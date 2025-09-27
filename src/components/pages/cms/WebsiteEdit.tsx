@@ -914,6 +914,14 @@ const WebsiteEdit: React.FC = () => {
                 onChange={async (e) => {
                   const file = e.target.files?.[0]
                   if (!file) return
+
+                  // Check file size (4MB limit)
+                  const maxSize = 4 * 1024 * 1024 // 4MB
+                  if (file.size > maxSize) {
+                    alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
+                    return
+                  }
+
                   try {
                     const form = new FormData()
                     form.append('file', file)
@@ -1782,6 +1790,13 @@ const WebsiteEdit: React.FC = () => {
                       onChange={async (e) => {
                         const file = e.target.files?.[0]
                         if (file) {
+                          // Check file size (4MB limit)
+                          const maxSize = 4 * 1024 * 1024 // 4MB
+                          if (file.size > maxSize) {
+                            alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
+                            return
+                          }
+
                           try {
                             const formData = new FormData()
                             formData.append('file', file)
@@ -1798,10 +1813,13 @@ const WebsiteEdit: React.FC = () => {
                               newTrips[tripIndex] = { ...trip, image: url }
                               setTripOptions({ ...tripOptions, customTrips: newTrips })
                             } else {
-                              console.error('Upload failed:', await uploadRes.text())
+                              const errorData = await uploadRes.json()
+                              console.error('Upload failed:', errorData)
+                              alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
                             }
                           } catch (error) {
                             console.error('Upload error:', error)
+                            alert('Upload failed. Please try again.')
                           }
                         }
                       }}
@@ -2173,6 +2191,13 @@ const WebsiteEdit: React.FC = () => {
                       onChange={async (e) => {
                         const file = e.target.files?.[0]
                         if (file) {
+                          // Check file size (4MB limit)
+                          const maxSize = 4 * 1024 * 1024 // 4MB
+                          if (file.size > maxSize) {
+                            alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
+                            return
+                          }
+
                           try {
                             const formData = new FormData()
                             formData.append('file', file)
@@ -2189,10 +2214,13 @@ const WebsiteEdit: React.FC = () => {
                               newTrips[tripIndex] = { ...trip, image: url }
                               setTripOptions({ ...tripOptions, groupTrips: newTrips })
                             } else {
-                              console.error('Upload failed:', await uploadRes.text())
+                              const errorData = await uploadRes.json()
+                              console.error('Upload failed:', errorData)
+                              alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
                             }
                           } catch (error) {
                             console.error('Upload error:', error)
+                            alert('Upload failed. Please try again.')
                           }
                         }
                       }}
