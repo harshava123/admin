@@ -1779,17 +1779,30 @@ const WebsiteEdit: React.FC = () => {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0]
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0]
                         if (file) {
-                          const reader = new FileReader()
-                          reader.onload = (event) => {
-                            const imageUrl = event.target?.result as string
-                            const newTrips = [...(tripOptions.customTrips || [])]
-                            newTrips[tripIndex] = { ...trip, image: imageUrl }
-                            setTripOptions({ ...tripOptions, customTrips: newTrips })
+                          try {
+                            const formData = new FormData()
+                            formData.append('file', file)
+                            formData.append('path', `trip-options/${citySlug}/${trip.id}`)
+                            
+                            const uploadRes = await fetch('/api/upload', {
+                              method: 'POST',
+                              body: formData
+                            })
+                            
+                            if (uploadRes.ok) {
+                              const { url } = await uploadRes.json()
+                              const newTrips = [...(tripOptions.customTrips || [])]
+                              newTrips[tripIndex] = { ...trip, image: url }
+                              setTripOptions({ ...tripOptions, customTrips: newTrips })
+                            } else {
+                              console.error('Upload failed:', await uploadRes.text())
+                            }
+                          } catch (error) {
+                            console.error('Upload error:', error)
                           }
-                          reader.readAsDataURL(file)
                         }
                       }}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
@@ -2157,17 +2170,30 @@ const WebsiteEdit: React.FC = () => {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files?.[0]
                         if (file) {
-                          const reader = new FileReader()
-                          reader.onload = (event) => {
-                            const imageUrl = event.target?.result as string
-                            const newTrips = [...(tripOptions.groupTrips || [])]
-                            newTrips[tripIndex] = { ...trip, image: imageUrl }
-                            setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                          try {
+                            const formData = new FormData()
+                            formData.append('file', file)
+                            formData.append('path', `trip-options/${citySlug}/group-${trip.id}`)
+                            
+                            const uploadRes = await fetch('/api/upload', {
+                              method: 'POST',
+                              body: formData
+                            })
+                            
+                            if (uploadRes.ok) {
+                              const { url } = await uploadRes.json()
+                              const newTrips = [...(tripOptions.groupTrips || [])]
+                              newTrips[tripIndex] = { ...trip, image: url }
+                              setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                            } else {
+                              console.error('Upload failed:', await uploadRes.text())
+                            }
+                          } catch (error) {
+                            console.error('Upload error:', error)
                           }
-                          reader.readAsDataURL(file)
                         }
                       }}
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
