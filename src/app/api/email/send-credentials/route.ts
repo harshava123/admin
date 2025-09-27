@@ -238,7 +238,8 @@ export async function POST(request: NextRequest) {
       console.log('SMTP connection verified successfully')
     } catch (verifyError) {
       console.error('SMTP connection failed:', verifyError)
-      throw new Error(`SMTP connection failed: ${verifyError.message}`)
+      const errorMessage = verifyError instanceof Error ? verifyError.message : 'Unknown error'
+      throw new Error(`SMTP connection failed: ${errorMessage}`)
     }
     
     const info = await transporter.sendMail(mailOptions)
