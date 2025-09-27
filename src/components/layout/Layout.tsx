@@ -140,6 +140,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       <Link
                         key={item.name}
                         to={item.href}
+                        onClick={() => {
+                          // Close mobile sidebar when navigation item is clicked
+                          if (window.innerWidth < 1024) {
+                            setSidebarOpen(false)
+                          }
+                        }}
                         className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                           isActive
                             ? 'bg-primary text-white shadow-sm'
