@@ -284,6 +284,9 @@ const WebsiteEdit: React.FC = () => {
 
   const [selectedUspItem, setSelectedUspItem] = useState<string>('1')
   const [selectedReview, setSelectedReview] = useState<string>('')
+  const [selectedBrand, setSelectedBrand] = useState<string>('')
+  const [selectedCustomTrip, setSelectedCustomTrip] = useState<string>('')
+  const [selectedGroupTrip, setSelectedGroupTrip] = useState<string>('')
 
   // File upload states for brands
   const [brandImageFiles, setBrandImageFiles] = useState<{ [brandId: string]: File | null }>({})
@@ -885,25 +888,25 @@ const WebsiteEdit: React.FC = () => {
           </button>
         </div>
         <div className="space-y-3">
-          <div>
+            <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Title
             </label>
-            <input
-              type="text"
-              value={hero.title}
+              <input
+                type="text"
+                value={hero.title}
               onChange={(e) => setHero(prev => ({ ...prev, title: e.target.value }))}
               className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="Hero title"
-            />
-          </div>
-          <div>
+              />
+            </div>
+            <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Subtitle
             </label>
-            <input
-              type="text"
-              value={hero.subtitle}
+              <input
+                type="text"
+                value={hero.subtitle}
               onChange={(e) => setHero(prev => ({ ...prev, subtitle: e.target.value }))}
               className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="Hero subtitle"
@@ -1060,7 +1063,7 @@ const WebsiteEdit: React.FC = () => {
                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
                 <option value="">Select a review to edit</option>
-                {reviews.reviews.map((review, index) => (
+              {reviews.reviews.map((review, index) => (
                   <option key={review.id} value={review.id}>
                     Review {index + 1} - {review.name || 'Unnamed Review'}
                   </option>
@@ -1070,7 +1073,7 @@ const WebsiteEdit: React.FC = () => {
 
             {/* Add New Review Button */}
             <div className="mb-3">
-              <button
+                    <button
                 onClick={() => {
                   const newReview = {
                     id: Date.now().toString(),
@@ -1079,7 +1082,7 @@ const WebsiteEdit: React.FC = () => {
                     images: [{ src: '', alt: '' }, { src: '', alt: '' }]
                   }
                   setReviews(prev => ({
-                    ...prev,
+                        ...prev,
                     reviews: [...prev.reviews, newReview]
                   }))
                   setSelectedReview(newReview.id)
@@ -1110,98 +1113,98 @@ const WebsiteEdit: React.FC = () => {
                             setSelectedReview('')
                           }}
                           className="text-red-600 hover:text-red-800 text-xs"
-                        >
-                          Remove
-                        </button>
-                      </div>
+                    >
+                      Remove
+                    </button>
+                  </div>
                       <div className="space-y-2">
-                        <div>
+                    <div>
                           <label className="block text-xs font-medium text-gray-700 mb-1">
-                            Name
-                          </label>
-                          <input
-                            type="text"
-                            value={review.name}
-                            onChange={(e) => setReviews(prev => ({
-                              ...prev,
-                              reviews: prev.reviews.map(r => 
-                                r.id === review.id ? { ...r, name: e.target.value } : r
-                              )
-                            }))}
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        value={review.name}
+                        onChange={(e) => setReviews(prev => ({
+                          ...prev,
+                          reviews: prev.reviews.map(r => 
+                            r.id === review.id ? { ...r, name: e.target.value } : r
+                          )
+                        }))}
                             className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                            placeholder="Reviewer name"
-                          />
-                        </div>
-                        <div>
+                        placeholder="Reviewer name"
+                      />
+                    </div>
+                    <div>
                           <label className="block text-xs font-medium text-gray-700 mb-1">
-                            Review Text
-                          </label>
-                          <textarea
-                            value={review.review}
-                            onChange={(e) => setReviews(prev => ({
-                              ...prev,
-                              reviews: prev.reviews.map(r => 
-                                r.id === review.id ? { ...r, review: e.target.value } : r
-                              )
-                            }))}
+                        Review Text
+                      </label>
+                      <textarea
+                        value={review.review}
+                        onChange={(e) => setReviews(prev => ({
+                          ...prev,
+                          reviews: prev.reviews.map(r => 
+                            r.id === review.id ? { ...r, review: e.target.value } : r
+                          )
+                        }))}
                             className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
                             rows={2}
-                            placeholder="Review text"
-                          />
-                        </div>
+                        placeholder="Review text"
+                      />
+                    </div>
                         <div className="grid grid-cols-2 gap-2">
-                          <div>
+                      <div>
                             <label className="block text-xs font-medium text-gray-700 mb-1">
-                              Image 1 URL
-                            </label>
-                            <input
-                              type="url"
-                              value={review.images[0]?.src || ''}
-                              onChange={(e) => setReviews(prev => ({
-                                ...prev,
-                                reviews: prev.reviews.map(r => 
-                                  r.id === review.id ? { 
-                                    ...r, 
-                                    images: [
-                                      { ...r.images[0], src: e.target.value },
-                                      r.images[1] || { src: '', alt: '' }
-                                    ]
-                                  } : r
-                                )
-                              }))}
+                          Image 1 URL
+                        </label>
+                        <input
+                          type="url"
+                          value={review.images[0]?.src || ''}
+                          onChange={(e) => setReviews(prev => ({
+                            ...prev,
+                            reviews: prev.reviews.map(r => 
+                              r.id === review.id ? { 
+                                ...r, 
+                                images: [
+                                  { ...r.images[0], src: e.target.value },
+                                  r.images[1] || { src: '', alt: '' }
+                                ]
+                              } : r
+                            )
+                          }))}
                               className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                              placeholder="First image URL"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
-                              Image 2 URL
-                            </label>
-                            <input
-                              type="url"
-                              value={review.images[1]?.src || ''}
-                              onChange={(e) => setReviews(prev => ({
-                                ...prev,
-                                reviews: prev.reviews.map(r => 
-                                  r.id === review.id ? { 
-                                    ...r, 
-                                    images: [
-                                      r.images[0] || { src: '', alt: '' },
-                                      { ...r.images[1], src: e.target.value }
-                                    ]
-                                  } : r
-                                )
-                              }))}
-                              className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                              placeholder="Second image URL"
-                            />
-                          </div>
-                        </div>
+                          placeholder="First image URL"
+                        />
                       </div>
+                      <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                          Image 2 URL
+                        </label>
+                        <input
+                          type="url"
+                          value={review.images[1]?.src || ''}
+                          onChange={(e) => setReviews(prev => ({
+                            ...prev,
+                            reviews: prev.reviews.map(r => 
+                              r.id === review.id ? { 
+                                ...r, 
+                                images: [
+                                  r.images[0] || { src: '', alt: '' },
+                                  { ...r.images[1], src: e.target.value }
+                                ]
+                              } : r
+                            )
+                          }))}
+                              className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                          placeholder="Second image URL"
+                        />
+                      </div>
+                    </div>
+                  </div>
                     </>
                   )
                 })()}
-              </div>
+                </div>
             )}
           </div>
         </div>
@@ -1360,7 +1363,7 @@ const WebsiteEdit: React.FC = () => {
           
           <div className="mt-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-md font-semibold text-gray-800">Brand Logos</h3>
+              <h3 className="text-md font-semibold text-gray-800">Brand Logos ({brands.brands.length})</h3>
               <button
                 onClick={() => {
                   const newId = Date.now().toString()
@@ -1375,6 +1378,7 @@ const WebsiteEdit: React.FC = () => {
                     }]
                   })
                   setBrandImageFiles(prev => ({ ...prev, [newId]: null }))
+                  setSelectedBrand(newId)
                 }}
                 className="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700"
               >
@@ -1382,171 +1386,197 @@ const WebsiteEdit: React.FC = () => {
               </button>
             </div>
             
-            <div className="space-y-4">
-              {brands.brands.map((brand, index) => (
-                <div key={brand.id} className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex justify-between items-center mb-3">
-                    <h4 className="text-sm font-medium text-gray-700">Brand {index + 1}</h4>
-                    <button
-                      onClick={() => {
-                        setBrands({
-                          ...brands,
-                          brands: brands.brands.filter(b => b.id !== brand.id)
-                        })
-                        setBrandImageFiles(prev => {
-                          const newFiles = { ...prev }
-                          delete newFiles[brand.id]
-                          return newFiles
-                        })
-                      }}
-                      className="text-red-600 hover:text-red-800 text-sm"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
-                      <input
-                        type="text"
-                        value={brand.name}
-                        onChange={(e) => setBrands({
-                          ...brands,
-                          brands: brands.brands.map(b => 
-                            b.id === brand.id ? { ...b, name: e.target.value } : b
-                          )
-                        })}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                        placeholder="Microsoft"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Logo Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                        onChange={async (e) => {
-                    const file = e.target.files?.[0]
-                          if (file) {
-                            // Check file size (4MB limit)
-                            const maxSize = 4 * 1024 * 1024 // 4MB
-                            if (file.size > maxSize) {
-                              alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
-                              return
-                            }
-
-                            try {
-                              const formData = new FormData()
-                              formData.append('file', file)
-                              formData.append('path', `brands/${brand.id}`)
-                              
-                              const uploadRes = await fetch('/api/upload', {
-                                method: 'POST',
-                                body: formData
-                              })
-                              
-                              if (uploadRes.ok) {
-                                const { url } = await uploadRes.json()
-                                setBrandImageFiles(prev => ({ ...prev, [brand.id]: file }))
-                                setBrands({
-                                  ...brands,
-                                  brands: brands.brands.map(b => 
-                                    b.id === brand.id ? { ...b, logoUrl: url } : b
-                                  )
-                                })
-                              } else {
-                                const errorData = await uploadRes.json()
-                                console.error('Upload failed:', errorData)
-                                alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
-                              }
-                            } catch (error) {
-                              console.error('Upload error:', error)
-                              alert('Upload failed. Please try again.')
-                            }
-                          }
-                        }}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                      {brand.logoUrl && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          Current: {brand.logoUrl.startsWith('data:') ? 'Uploaded image' : 'URL image'}
-                        </p>
-                )}
-              </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Width (px)</label>
-                      <input
-                        type="number"
-                        value={brand.width || 120}
-                        onChange={(e) => setBrands({
-                          ...brands,
-                          brands: brands.brands.map(b => 
-                            b.id === brand.id ? { ...b, width: parseInt(e.target.value) || 120 } : b
-                          )
-                        })}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                        min="50"
-                        max="500"
-                      />
+            {/* Brand Selector Dropdown */}
+            <div className="mb-4">
+              <select
+                value={selectedBrand}
+                onChange={(e) => setSelectedBrand(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select a brand to edit</option>
+                {brands.brands.map((brand, index) => (
+                  <option key={brand.id} value={brand.id}>
+                    Brand {index + 1} - {brand.name || 'Unnamed Brand'}
+                  </option>
+                ))}
+              </select>
             </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Height (px)</label>
-                      <input
-                        type="number"
-                        value={brand.height || 60}
-                        onChange={(e) => setBrands({
-                          ...brands,
-                          brands: brands.brands.map(b => 
-                            b.id === brand.id ? { ...b, height: parseInt(e.target.value) || 60 } : b
-                          )
-                        })}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                        min="30"
-                        max="200"
-                      />
-          </div>
-        </div>
 
-                  {brand.logoUrl && (
-                    <div className="mt-3">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Preview</label>
-                      <div className="w-32 h-16 border border-gray-300 rounded-md flex items-center justify-center bg-gray-50">
-                        <div className="relative w-full h-full">
-                          <Image
-                            src={brand.logoUrl}
-                            alt={brand.name || 'Brand logo'}
-                            fill
-                            className="object-contain"
-                            unoptimized
-                          />
-                        </div>
-                      </div>
-                      <div className="mt-2 flex gap-2">
+            {/* Selected Brand Edit Form */}
+            {selectedBrand && brands.brands.find(b => b.id === selectedBrand) && (
+              <div className="border border-gray-200 rounded-lg p-4">
+                {(() => {
+                  const brand = brands.brands.find(b => b.id === selectedBrand)!
+                  const index = brands.brands.findIndex(b => b.id === selectedBrand)
+                  
+                  return (
+                    <>
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="text-sm font-medium text-gray-800">Brand {index + 1}</h4>
                         <button
-                          type="button"
                           onClick={() => {
                             setBrands({
                               ...brands,
-                              brands: brands.brands.map(b => 
-                                b.id === brand.id ? { ...b, logoUrl: '' } : b
-                              )
+                              brands: brands.brands.filter(b => b.id !== selectedBrand)
                             })
-                            setBrandImageFiles(prev => ({ ...prev, [brand.id]: null }))
+                            setBrandImageFiles(prev => {
+                              const newFiles = { ...prev }
+                              delete newFiles[selectedBrand]
+                              return newFiles
+                            })
+                            setSelectedBrand('')
                           }}
-                          className="text-xs text-red-600 hover:text-red-800"
+                          className="text-red-600 hover:text-red-800 text-xs"
                         >
-                          Remove Image
+                          Remove
                         </button>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Brand Name</label>
+                          <input
+                            type="text"
+                            value={brand.name}
+                            onChange={(e) => setBrands({
+                              ...brands,
+                              brands: brands.brands.map(b => 
+                                b.id === brand.id ? { ...b, name: e.target.value } : b
+                              )
+                            })}
+                            className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                            placeholder="Microsoft"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs font-medium text-gray-700 mb-1">Logo Image</label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]
+                              if (file) {
+                                // Check file size (4MB limit)
+                                const maxSize = 4 * 1024 * 1024 // 4MB
+                                if (file.size > maxSize) {
+                                  alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
+                                  return
+                                }
+
+                                try {
+                                  const formData = new FormData()
+                                  formData.append('file', file)
+                                  formData.append('path', `brands/${brand.id}`)
+                                  
+                                  const uploadRes = await fetch('/api/upload', {
+                                    method: 'POST',
+                                    body: formData
+                                  })
+                                  
+                                  if (uploadRes.ok) {
+                                    const { url } = await uploadRes.json()
+                                    setBrandImageFiles(prev => ({ ...prev, [brand.id]: file }))
+                                    setBrands({
+                                      ...brands,
+                                      brands: brands.brands.map(b => 
+                                        b.id === brand.id ? { ...b, logoUrl: url } : b
+                                      )
+                                    })
+                                  } else {
+                                    const errorData = await uploadRes.json()
+                                    console.error('Upload failed:', errorData)
+                                    alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
+                                  }
+                                } catch (error) {
+                                  console.error('Upload error:', error)
+                                  alert('Upload failed. Please try again.')
+                                }
+                              }
+                            }}
+                            className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                          />
+                          {brand.logoUrl && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Current: {brand.logoUrl.startsWith('data:') ? 'Uploaded image' : 'URL image'}
+                            </p>
+                          )}
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Width (px)</label>
+                            <input
+                              type="number"
+                              value={brand.width || 120}
+                              onChange={(e) => setBrands({
+                                ...brands,
+                                brands: brands.brands.map(b => 
+                                  b.id === brand.id ? { ...b, width: parseInt(e.target.value) || 120 } : b
+                                )
+                              })}
+                              className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                              min="50"
+                              max="500"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Height (px)</label>
+                            <input
+                              type="number"
+                              value={brand.height || 60}
+                              onChange={(e) => setBrands({
+                                ...brands,
+                                brands: brands.brands.map(b => 
+                                  b.id === brand.id ? { ...b, height: parseInt(e.target.value) || 60 } : b
+                                )
+                              })}
+                              className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                              min="30"
+                              max="200"
+                            />
+                          </div>
+                        </div>
+
+                        {brand.logoUrl && (
+                          <div className="mt-2">
+                            <label className="block text-xs font-medium text-gray-700 mb-1">Preview</label>
+                            <div className="w-24 h-12 border border-gray-200 rounded-md flex items-center justify-center bg-gray-50">
+                              <div className="relative w-full h-full">
+                                <Image
+                                  src={brand.logoUrl} 
+                                  alt={brand.name || 'Brand logo'} 
+                                  fill
+                                  className="object-contain"
+                                  unoptimized
+                                />
+                              </div>
+                            </div>
+                            <div className="mt-1.5">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setBrands({
+                                    ...brands,
+                                    brands: brands.brands.map(b => 
+                                      b.id === brand.id ? { ...b, logoUrl: '' } : b
+                                    )
+                                  })
+                                  setBrandImageFiles(prev => ({ ...prev, [brand.id]: null }))
+                                }}
+                                className="text-xs text-red-600 hover:text-red-800"
+                              >
+                                Remove Image
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )
+                })()}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -1802,590 +1832,707 @@ const WebsiteEdit: React.FC = () => {
         {/* Custom Trips Section */}
         <div className="mt-8">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Custom Trips</h3>
-          {(tripOptions.customTrips || []).map((trip, tripIndex) => (
-            <div key={trip.id} className="border border-gray-200 rounded-lg p-4 mb-4">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="text-md font-medium text-gray-800">{trip.title}</h4>
-                <button
-                  onClick={() => setTripOptions({
-                    ...tripOptions,
-                    customTrips: (tripOptions.customTrips || []).filter((_, i) => i !== tripIndex)
-                  })}
-                  className="text-red-600 hover:text-red-800 text-sm"
-                >
-                  Remove Trip
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Trip Title</label>
-                  <input
-                    type="text"
-                    value={trip.title}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.customTrips || [])]
-                      newTrips[tripIndex] = { ...trip, title: e.target.value }
-                      setTripOptions({ ...tripOptions, customTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <input
-                    type="text"
-                    value={trip.description}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.customTrips || [])]
-                      newTrips[tripIndex] = { ...trip, description: e.target.value }
-                      setTripOptions({ ...tripOptions, customTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Trip Image</label>
-                  <div className="flex items-center gap-4">
-                    {trip.image && (
-                      <div className="relative w-16 h-16 rounded-lg border border-gray-300 overflow-hidden">
-                        <Image
-                          src={trip.image}
-                          alt={trip.title}
-                          fill
-                          className="object-cover"
-                          unoptimized
-                        />
-                      </div>
-                    )}
-            <input
-              type="file"
-              accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0]
-                        if (file) {
-                          // Check file size (4MB limit)
-                          const maxSize = 4 * 1024 * 1024 // 4MB
-                          if (file.size > maxSize) {
-                            alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
-                            return
-                          }
-
-                          try {
-                            const formData = new FormData()
-                            formData.append('file', file)
-                            formData.append('path', `trip-options/${citySlug}/${trip.id}`)
-                            
-                            const uploadRes = await fetch('/api/upload', {
-                              method: 'POST',
-                              body: formData
-                            })
-                            
-                            if (uploadRes.ok) {
-                              const { url } = await uploadRes.json()
-                              const newTrips = [...(tripOptions.customTrips || [])]
-                              newTrips[tripIndex] = { ...trip, image: url }
-                              setTripOptions({ ...tripOptions, customTrips: newTrips })
-                            } else {
-                              const errorData = await uploadRes.json()
-                              console.error('Upload failed:', errorData)
-                              alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
-                            }
-                          } catch (error) {
-                            console.error('Upload error:', error)
-                            alert('Upload failed. Please try again.')
-                          }
-                        }
-                      }}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-        </div>
-            </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
-                  <input
-                    type="text"
-                    value={trip.route || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.customTrips || [])]
-                      newTrips[tripIndex] = { ...trip, route: e.target.value }
-                      setTripOptions({ ...tripOptions, customTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
+          
+          {/* Custom Trip Selector Dropdown */}
+          <div className="mb-4">
+            <select
+              value={selectedCustomTrip}
+              onChange={(e) => setSelectedCustomTrip(e.target.value)}
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+            >
+              <option value="">Select a custom trip to edit</option>
+              {(tripOptions.customTrips || []).map((trip, index) => (
+                <option key={trip.id} value={trip.id}>
+                  Custom Trip {index + 1} - {trip.title || 'Untitled Trip'}
+                </option>
+              ))}
+            </select>
           </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nights</label>
-                  <input
-                    type="number"
-                    value={trip.nights || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.customTrips || [])]
-                      newTrips[tripIndex] = { ...trip, nights: parseInt(e.target.value) || 0 }
-                      setTripOptions({ ...tripOptions, customTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Days</label>
-                  <input
-                    type="number"
-                    value={trip.days || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.customTrips || [])]
-                      newTrips[tripIndex] = { ...trip, days: parseInt(e.target.value) || 0 }
-                      setTripOptions({ ...tripOptions, customTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
-                  <input
-                    type="number"
-                    value={trip.price || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.customTrips || [])]
-                      newTrips[tripIndex] = { ...trip, price: parseInt(e.target.value) || 0 }
-                      setTripOptions({ ...tripOptions, customTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                  <select
-                    value={trip.category}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.customTrips || [])]
-                      newTrips[tripIndex] = { ...trip, category: e.target.value as 'custom' | 'group' }
-                      setTripOptions({ ...tripOptions, customTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="custom">Custom</option>
-                    <option value="group">Group</option>
-                  </select>
-        </div>
-      </div>
 
-              {/* Detailed Itinerary */}
-              {trip.detailedItinerary && (
-                <div className="mt-6 border-t pt-4">
-                  <h5 className="text-md font-medium text-gray-800 mb-3">Detailed Itinerary</h5>
-                  
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Subtitle</label>
-            <input
-                      type="text"
-                      value={trip.detailedItinerary.subtitle}
-              onChange={(e) => {
-                        const newTrips = [...(tripOptions.customTrips || [])]
-                        newTrips[tripIndex] = {
-                          ...trip,
-                          detailedItinerary: {
-                            ...trip.detailedItinerary!,
-                            subtitle: e.target.value
-                          }
-                        }
-                        setTripOptions({ ...tripOptions, customTrips: newTrips })
-                      }}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-        </div>
+          {/* Add New Custom Trip Button */}
+          <div className="mb-4">
+            <button
+              onClick={() => {
+                const newTrip: TripOption = {
+                  id: `custom-${Date.now()}`,
+                  title: 'New Custom Trip',
+                  description: 'Custom trip description',
+                  image: '/cards/1.jpg',
+                  nights: 3,
+                  days: 4,
+                  price: 12000,
+                  category: 'custom',
+                  route: '',
+                  trending: false,
+                  detailedItinerary: {
+                    subtitle: 'Custom Travel Experience',
+                    briefItinerary: [
+                      { day: 1, title: 'Day 1', description: 'Day 1 description' }
+                    ],
+                    keyAttractions: ['Attraction 1'],
+                    inclusions: ['Inclusion 1']
+                  }
+                }
+                setTripOptions({ ...tripOptions, customTrips: [...(tripOptions.customTrips || []), newTrip] })
+                setSelectedCustomTrip(newTrip.id)
+              }}
+              className="w-full py-2 text-sm border-2 border-dashed border-gray-200 rounded-md text-gray-600 hover:border-gray-300 hover:text-gray-700 transition-colors"
+            >
+              Add New Custom Trip
+            </button>
+          </div>
 
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Daily Itinerary</label>
-                    {trip.detailedItinerary.briefItinerary.map((day, dayIndex) => (
-                      <div key={dayIndex} className="border border-gray-200 rounded p-3 mb-2">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                          <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Day</label>
-                            <input
-                              type="number"
-                              value={day.day}
-                              onChange={(e) => {
-                                const newTrips = [...(tripOptions.customTrips || [])]
-                                const newItinerary = [...trip.detailedItinerary!.briefItinerary]
-                                newItinerary[dayIndex] = { ...day, day: parseInt(e.target.value) }
-                                newTrips[tripIndex] = {
-                                  ...trip,
-                                  detailedItinerary: {
-                                    ...trip.detailedItinerary!,
-                                    briefItinerary: newItinerary
-                                  }
-                                }
-                                setTripOptions({ ...tripOptions, customTrips: newTrips })
-                              }}
-                              className="w-full border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Title</label>
-                            <input
-                              type="text"
-                              value={day.title}
-                              onChange={(e) => {
-                                const newTrips = [...(tripOptions.customTrips || [])]
-                                const newItinerary = [...trip.detailedItinerary!.briefItinerary]
-                                newItinerary[dayIndex] = { ...day, title: e.target.value }
-                                newTrips[tripIndex] = {
-                                  ...trip,
-                                  detailedItinerary: {
-                                    ...trip.detailedItinerary!,
-                                    briefItinerary: newItinerary
-                                  }
-                                }
-                                setTripOptions({ ...tripOptions, customTrips: newTrips })
-                              }}
-                              className="w-full border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
-                            <input
-                              type="text"
-                              value={day.description}
-                              onChange={(e) => {
-                                const newTrips = [...(tripOptions.customTrips || [])]
-                                const newItinerary = [...trip.detailedItinerary!.briefItinerary]
-                                newItinerary[dayIndex] = { ...day, description: e.target.value }
-                                newTrips[tripIndex] = {
-                                  ...trip,
-                                  detailedItinerary: {
-                                    ...trip.detailedItinerary!,
-                                    briefItinerary: newItinerary
-                                  }
-                                }
-                                setTripOptions({ ...tripOptions, customTrips: newTrips })
-                              }}
-                              className="w-full border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                            />
-                          </div>
-                        </div>
-                  <button
-                          onClick={() => {
-                            const newTrips = [...(tripOptions.customTrips || [])]
-                            const newItinerary = trip.detailedItinerary!.briefItinerary.filter((_, i) => i !== dayIndex)
-                            newTrips[tripIndex] = {
-                              ...trip,
-                              detailedItinerary: {
-                                ...trip.detailedItinerary!,
-                                briefItinerary: newItinerary
-                              }
-                            }
-                            setTripOptions({ ...tripOptions, customTrips: newTrips })
-                          }}
-                          className="mt-2 text-red-600 hover:text-red-800 text-xs"
-                        >
-                          Remove Day
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => {
-                        const newTrips = [...(tripOptions.customTrips || [])]
-                        const newItinerary = [...trip.detailedItinerary!.briefItinerary, {
-                          day: trip.detailedItinerary!.briefItinerary.length + 1,
-                          title: '',
-                          description: ''
-                        }]
-                        newTrips[tripIndex] = {
-                          ...trip,
-                          detailedItinerary: {
-                            ...trip.detailedItinerary!,
-                            briefItinerary: newItinerary
-                          }
-                        }
-                        setTripOptions({ ...tripOptions, customTrips: newTrips })
-                      }}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                    >
-                      + Add Day
-                    </button>
-                  </div>
-
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Key Attractions</label>
-                    {trip.detailedItinerary.keyAttractions.map((attraction, attractionIndex) => (
-                      <div key={attractionIndex} className="flex gap-2 mb-2">
+          {/* Selected Custom Trip Edit Form */}
+          {selectedCustomTrip && tripOptions.customTrips?.find(t => t.id === selectedCustomTrip) && (
+            <div className="border border-gray-200 rounded-lg p-4 mb-4">
+              {(() => {
+                const trip = tripOptions.customTrips?.find(t => t.id === selectedCustomTrip)!
+                const tripIndex = tripOptions.customTrips?.findIndex(t => t.id === selectedCustomTrip) || 0
+                
+                return (
+                  <>
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-md font-medium text-gray-800">Custom Trip {tripIndex + 1}</h4>
+                      <button
+                        onClick={() => {
+                          setTripOptions({
+                            ...tripOptions,
+                            customTrips: (tripOptions.customTrips || []).filter(t => t.id !== selectedCustomTrip)
+                          })
+                          setSelectedCustomTrip('')
+                        }}
+                        className="text-red-600 hover:text-red-800 text-sm"
+                      >
+                        Remove Trip
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Trip Title</label>
                         <input
                           type="text"
-                          value={attraction}
+                          value={trip.title}
                           onChange={(e) => {
                             const newTrips = [...(tripOptions.customTrips || [])]
-                            const newAttractions = [...trip.detailedItinerary!.keyAttractions]
-                            newAttractions[attractionIndex] = e.target.value
-                            newTrips[tripIndex] = {
-                              ...trip,
-                              detailedItinerary: {
-                                ...trip.detailedItinerary!,
-                                keyAttractions: newAttractions
-                              }
-                            }
+                            newTrips[tripIndex] = { ...trip, title: e.target.value }
                             setTripOptions({ ...tripOptions, customTrips: newTrips })
                           }}
-                          className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                         />
-                        <button
-                          onClick={() => {
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <input
+                          type="text"
+                          value={trip.description}
+                          onChange={(e) => {
                             const newTrips = [...(tripOptions.customTrips || [])]
-                            const newAttractions = trip.detailedItinerary!.keyAttractions.filter((_, i) => i !== attractionIndex)
-                            newTrips[tripIndex] = {
-                              ...trip,
-                              detailedItinerary: {
-                                ...trip.detailedItinerary!,
-                                keyAttractions: newAttractions
-                              }
-                            }
+                            newTrips[tripIndex] = { ...trip, description: e.target.value }
                             setTripOptions({ ...tripOptions, customTrips: newTrips })
                           }}
-                          className="text-red-600 hover:text-red-800 px-2"
-                  >
-                    Remove
-                  </button>
-                </div>
-                    ))}
-                    <button
-                      onClick={() => {
-                        const newTrips = [...(tripOptions.customTrips || [])]
-                        const newAttractions = [...trip.detailedItinerary!.keyAttractions, '']
-                        newTrips[tripIndex] = {
-                          ...trip,
-                          detailedItinerary: {
-                            ...trip.detailedItinerary!,
-                            keyAttractions: newAttractions
-                          }
-                        }
-                        setTripOptions({ ...tripOptions, customTrips: newTrips })
-                      }}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                    >
-                      + Add Attraction
-                    </button>
-                  </div>
-                </div>
-              )}
-              </div>
-            ))}
-          
-          <button
-            onClick={() => {
-              const newTrip: TripOption = {
-                id: `custom-${Date.now()}`,
-                title: 'New Custom Trip',
-                description: 'Trip description',
-                image: '/cards/1.jpg',
-                nights: 3,
-                days: 4,
-                price: 15000,
-                category: 'custom',
-                route: '',
-                trending: false,
-                detailedItinerary: {
-                  subtitle: 'Complete Travel Experience',
-                  briefItinerary: [
-                    { day: 1, title: 'Day 1', description: 'Day 1 description' }
-                  ],
-                  keyAttractions: ['Attraction 1'],
-                  inclusions: ['Inclusion 1']
-                }
-              }
-              setTripOptions({ ...tripOptions, customTrips: [...(tripOptions.customTrips || []), newTrip] })
-            }}
-            className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-600 hover:text-gray-800 hover:border-gray-400 transition-colors"
-          >
-            + Add New Custom Trip
-          </button>
-          </div>
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Trip Image</label>
+                        <div className="flex items-center gap-4">
+                          {trip.image && (
+                            <div className="relative w-16 h-16 rounded-lg border border-gray-300 overflow-hidden">
+                              <Image
+                                src={trip.image} 
+                                alt={trip.title}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
+                            </div>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]
+                              if (file) {
+                                // Check file size (4MB limit)
+                                const maxSize = 4 * 1024 * 1024 // 4MB
+                                if (file.size > maxSize) {
+                                  alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
+                                  return
+                                }
+
+                                try {
+                                  const formData = new FormData()
+                                  formData.append('file', file)
+                                  formData.append('path', `trip-options/${citySlug}/custom-${trip.id}`)
+                                  
+                                  const uploadRes = await fetch('/api/upload', {
+                                    method: 'POST',
+                                    body: formData
+                                  })
+                                  
+                                  if (uploadRes.ok) {
+                                    const { url } = await uploadRes.json()
+                                    const newTrips = [...(tripOptions.customTrips || [])]
+                                    newTrips[tripIndex] = { ...trip, image: url }
+                                    setTripOptions({ ...tripOptions, customTrips: newTrips })
+                                  } else {
+                                    const errorData = await uploadRes.json()
+                                    console.error('Upload failed:', errorData)
+                                    alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
+                                  }
+                                } catch (error) {
+                                  console.error('Upload error:', error)
+                                  alert('Upload failed. Please try again.')
+                                }
+                              }
+                            }}
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
+                        <input
+                          type="text"
+                          value={trip.route || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.customTrips || [])]
+                            newTrips[tripIndex] = { ...trip, route: e.target.value }
+                            setTripOptions({ ...tripOptions, customTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Nights</label>
+                        <input
+                          type="number"
+                          value={trip.nights || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.customTrips || [])]
+                            newTrips[tripIndex] = { ...trip, nights: parseInt(e.target.value) || 0 }
+                            setTripOptions({ ...tripOptions, customTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Days</label>
+                        <input
+                          type="number"
+                          value={trip.days || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.customTrips || [])]
+                            newTrips[tripIndex] = { ...trip, days: parseInt(e.target.value) || 0 }
+                            setTripOptions({ ...tripOptions, customTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
+                        <input
+                          type="number"
+                          value={trip.price || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.customTrips || [])]
+                            newTrips[tripIndex] = { ...trip, price: parseInt(e.target.value) || 0 }
+                            setTripOptions({ ...tripOptions, customTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )
+              })()}
+            </div>
+          )}
+        </div>
 
         {/* Group Trips Section */}
         <div className="mt-8">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Group Departures</h3>
-          {(tripOptions.groupTrips || []).map((trip, tripIndex) => (
-            <div key={trip.id} className="border border-gray-200 rounded-lg p-4 mb-4">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="text-md font-medium text-gray-800">{trip.title}</h4>
-                <button
-                  onClick={() => setTripOptions({
-                    ...tripOptions,
-                    groupTrips: (tripOptions.groupTrips || []).filter((_, i) => i !== tripIndex)
-                  })}
-                  className="text-red-600 hover:text-red-800 text-sm"
-                >
-                  Remove Trip
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Trip Title</label>
-                  <input
-                    type="text"
-                    value={trip.title}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.groupTrips || [])]
-                      newTrips[tripIndex] = { ...trip, title: e.target.value }
-                      setTripOptions({ ...tripOptions, groupTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <input
-                    type="text"
-                    value={trip.description}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.groupTrips || [])]
-                      newTrips[tripIndex] = { ...trip, description: e.target.value }
-                      setTripOptions({ ...tripOptions, groupTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Trip Image</label>
-                  <div className="flex items-center gap-4">
-                    {trip.image && (
-                      <div className="relative w-16 h-16 rounded-lg border border-gray-300 overflow-hidden">
-                        <Image
-                          src={trip.image}
-                          alt={trip.title}
-                          fill
-                          className="object-cover"
-                          unoptimized
+          
+          {/* Group Trip Selector Dropdown */}
+          <div className="mb-4">
+            <select
+              value={selectedGroupTrip}
+              onChange={(e) => setSelectedGroupTrip(e.target.value)}
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+            >
+              <option value="">Select a group trip to edit</option>
+              {(tripOptions.groupTrips || []).map((trip, index) => (
+                <option key={trip.id} value={trip.id}>
+                  Group Trip {index + 1} - {trip.title || 'Untitled Trip'}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Add New Group Trip Button */}
+          <div className="mb-4">
+            <button
+              onClick={() => {
+                const newTrip: TripOption = {
+                  id: `group-${Date.now()}`,
+                  title: 'New Group Trip',
+                  description: 'Group trip description',
+                  image: '/cards/1.jpg',
+                  nights: 3,
+                  days: 4,
+                  price: 12000,
+                  category: 'group',
+                  route: '',
+                  trending: false,
+                  detailedItinerary: {
+                    subtitle: 'Group Travel Experience',
+                    briefItinerary: [
+                      { day: 1, title: 'Day 1', description: 'Day 1 description' }
+                    ],
+                    keyAttractions: ['Attraction 1'],
+                    inclusions: ['Inclusion 1']
+                  }
+                }
+                setTripOptions({ ...tripOptions, groupTrips: [...(tripOptions.groupTrips || []), newTrip] })
+                setSelectedGroupTrip(newTrip.id)
+              }}
+              className="w-full py-2 text-sm border-2 border-dashed border-gray-200 rounded-md text-gray-600 hover:border-gray-300 hover:text-gray-700 transition-colors"
+            >
+              Add New Group Trip
+            </button>
+          </div>
+
+          {/* Selected Group Trip Edit Form */}
+          {selectedGroupTrip && tripOptions.groupTrips?.find(t => t.id === selectedGroupTrip) && (
+            <div className="border border-gray-200 rounded-lg p-4 mb-4">
+              {(() => {
+                const trip = tripOptions.groupTrips?.find(t => t.id === selectedGroupTrip)!
+                const tripIndex = tripOptions.groupTrips?.findIndex(t => t.id === selectedGroupTrip) || 0
+                
+                return (
+                  <>
+                    <div className="flex justify-between items-center mb-4">
+                      <h4 className="text-md font-medium text-gray-800">Group Trip {tripIndex + 1}</h4>
+                      <button
+                        onClick={() => {
+                          setTripOptions({
+                            ...tripOptions,
+                            groupTrips: (tripOptions.groupTrips || []).filter(t => t.id !== selectedGroupTrip)
+                          })
+                          setSelectedGroupTrip('')
+                        }}
+                        className="text-red-600 hover:text-red-800 text-sm"
+                      >
+                        Remove Trip
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Trip Title</label>
+                        <input
+                          type="text"
+                          value={trip.title}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.groupTrips || [])]
+                            newTrips[tripIndex] = { ...trip, title: e.target.value }
+                            setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                       </div>
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0]
-                        if (file) {
-                          // Check file size (4MB limit)
-                          const maxSize = 4 * 1024 * 1024 // 4MB
-                          if (file.size > maxSize) {
-                            alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
-                            return
-                          }
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <input
+                          type="text"
+                          value={trip.description}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.groupTrips || [])]
+                            newTrips[tripIndex] = { ...trip, description: e.target.value }
+                            setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Trip Image</label>
+                        <div className="flex items-center gap-4">
+                          {trip.image && (
+                            <div className="relative w-16 h-16 rounded-lg border border-gray-300 overflow-hidden">
+                              <Image
+                                src={trip.image} 
+                                alt={trip.title}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
+                            </div>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0]
+                              if (file) {
+                                // Check file size (4MB limit)
+                                const maxSize = 4 * 1024 * 1024 // 4MB
+                                if (file.size > maxSize) {
+                                  alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
+                                  return
+                                }
 
-                          try {
-                            const formData = new FormData()
-                            formData.append('file', file)
-                            formData.append('path', `trip-options/${citySlug}/group-${trip.id}`)
-                            
-                            const uploadRes = await fetch('/api/upload', {
-                              method: 'POST',
-                              body: formData
-                            })
-                            
-                            if (uploadRes.ok) {
-                              const { url } = await uploadRes.json()
+                                try {
+                                  const formData = new FormData()
+                                  formData.append('file', file)
+                                  formData.append('path', `trip-options/${citySlug}/group-${trip.id}`)
+                                  
+                                  const uploadRes = await fetch('/api/upload', {
+                                    method: 'POST',
+                                    body: formData
+                                  })
+                                  
+                                  if (uploadRes.ok) {
+                                    const { url } = await uploadRes.json()
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    newTrips[tripIndex] = { ...trip, image: url }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  } else {
+                                    const errorData = await uploadRes.json()
+                                    console.error('Upload failed:', errorData)
+                                    alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
+                                  }
+                                } catch (error) {
+                                  console.error('Upload error:', error)
+                                  alert('Upload failed. Please try again.')
+                                }
+                              }
+                            }}
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
+                        <input
+                          type="text"
+                          value={trip.route || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.groupTrips || [])]
+                            newTrips[tripIndex] = { ...trip, route: e.target.value }
+                            setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Nights</label>
+                        <input
+                          type="number"
+                          value={trip.nights || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.groupTrips || [])]
+                            newTrips[tripIndex] = { ...trip, nights: parseInt(e.target.value) || 0 }
+                            setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Days</label>
+                        <input
+                          type="number"
+                          value={trip.days || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.groupTrips || [])]
+                            newTrips[tripIndex] = { ...trip, days: parseInt(e.target.value) || 0 }
+                            setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
+                        <input
+                          type="number"
+                          value={trip.price || ''}
+                          onChange={(e) => {
+                            const newTrips = [...(tripOptions.groupTrips || [])]
+                            newTrips[tripIndex] = { ...trip, price: parseInt(e.target.value) || 0 }
+                            setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                          }}
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Detailed Itinerary Section */}
+                    <div className="mt-6 border-t border-gray-200 pt-4">
+                      <h5 className="text-sm font-semibold text-gray-800 mb-3">Detailed Itinerary</h5>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Itinerary Subtitle</label>
+                          <input
+                            type="text"
+                            value={trip.detailedItinerary?.subtitle || ''}
+                            onChange={(e) => {
                               const newTrips = [...(tripOptions.groupTrips || [])]
-                              newTrips[tripIndex] = { ...trip, image: url }
+                              newTrips[tripIndex] = { 
+                                ...trip, 
+                                detailedItinerary: {
+                                  ...trip.detailedItinerary,
+                                  subtitle: e.target.value,
+                                  briefItinerary: trip.detailedItinerary?.briefItinerary || [],
+                                  keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                  inclusions: trip.detailedItinerary?.inclusions || []
+                                }
+                              }
                               setTripOptions({ ...tripOptions, groupTrips: newTrips })
-                            } else {
-                              const errorData = await uploadRes.json()
-                              console.error('Upload failed:', errorData)
-                              alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
-                            }
-                          } catch (error) {
-                            console.error('Upload error:', error)
-                            alert('Upload failed. Please try again.')
-                          }
-                        }
-                      }}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-      </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Route</label>
-                  <input
-                    type="text"
-                    value={trip.route || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.groupTrips || [])]
-                      newTrips[tripIndex] = { ...trip, route: e.target.value }
-                      setTripOptions({ ...tripOptions, groupTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nights</label>
-                  <input
-                    type="number"
-                    value={trip.nights || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.groupTrips || [])]
-                      newTrips[tripIndex] = { ...trip, nights: parseInt(e.target.value) || 0 }
-                      setTripOptions({ ...tripOptions, groupTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Days</label>
-                  <input
-                    type="number"
-                    value={trip.days || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.groupTrips || [])]
-                      newTrips[tripIndex] = { ...trip, days: parseInt(e.target.value) || 0 }
-                      setTripOptions({ ...tripOptions, groupTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
-                  <input
-                    type="number"
-                    value={trip.price || ''}
-                    onChange={(e) => {
-                      const newTrips = [...(tripOptions.groupTrips || [])]
-                      newTrips[tripIndex] = { ...trip, price: parseInt(e.target.value) || 0 }
-                      setTripOptions({ ...tripOptions, groupTrips: newTrips })
-                    }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-              </div>
+                            }}
+                            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            placeholder="Group Travel Experience"
+                          />
+                        </div>
+
+                        {/* Brief Itinerary */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Brief Itinerary</label>
+                          <div className="space-y-2">
+                            {(trip.detailedItinerary?.briefItinerary || []).map((day, dayIndex) => (
+                              <div key={dayIndex} className="flex gap-2 items-center">
+                                <input
+                                  type="number"
+                                  value={day.day}
+                                  onChange={(e) => {
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    const newItinerary = [...(trip.detailedItinerary?.briefItinerary || [])]
+                                    newItinerary[dayIndex] = { ...day, day: parseInt(e.target.value) || 1 }
+                                    newTrips[tripIndex] = { 
+                                      ...trip, 
+                                      detailedItinerary: {
+                                        subtitle: trip.detailedItinerary?.subtitle || '',
+                                        briefItinerary: newItinerary,
+                                        keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                        inclusions: trip.detailedItinerary?.inclusions || []
+                                      }
+                                    }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  }}
+                                  className="w-16 border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                  placeholder="Day"
+                                />
+                                <input
+                                  type="text"
+                                  value={day.title}
+                                  onChange={(e) => {
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    const newItinerary = [...(trip.detailedItinerary?.briefItinerary || [])]
+                                    newItinerary[dayIndex] = { ...day, title: e.target.value }
+                                    newTrips[tripIndex] = { 
+                                      ...trip, 
+                                      detailedItinerary: {
+                                        subtitle: trip.detailedItinerary?.subtitle || '',
+                                        briefItinerary: newItinerary,
+                                        keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                        inclusions: trip.detailedItinerary?.inclusions || []
+                                      }
+                                    }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  }}
+                                  className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                  placeholder="Day title"
+                                />
+                                <button
+                                  onClick={() => {
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    const newItinerary = (trip.detailedItinerary?.briefItinerary || []).filter((_, i) => i !== dayIndex)
+                                    newTrips[tripIndex] = { 
+                                      ...trip, 
+                                      detailedItinerary: {
+                                        subtitle: trip.detailedItinerary?.subtitle || '',
+                                        briefItinerary: newItinerary,
+                                        keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                        inclusions: trip.detailedItinerary?.inclusions || []
+                                      }
+                                    }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  }}
+                                  className="text-red-600 hover:text-red-800 text-sm"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => {
+                                const newTrips = [...(tripOptions.groupTrips || [])]
+                                const newItinerary = [...(trip.detailedItinerary?.briefItinerary || []), { day: 1, title: '', description: '' }]
+                                newTrips[tripIndex] = { 
+                                  ...trip, 
+                                  detailedItinerary: {
+                                    subtitle: trip.detailedItinerary?.subtitle || '',
+                                    briefItinerary: newItinerary,
+                                    keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                    inclusions: trip.detailedItinerary?.inclusions || []
+                                  }
+                                }
+                                setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                              }}
+                              className="text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              + Add Day
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Key Attractions */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Key Attractions</label>
+                          <div className="space-y-2">
+                            {(trip.detailedItinerary?.keyAttractions || []).map((attraction, attractionIndex) => (
+                              <div key={attractionIndex} className="flex gap-2 items-center">
+                                <input
+                                  type="text"
+                                  value={attraction}
+                                  onChange={(e) => {
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    const newAttractions = [...(trip.detailedItinerary?.keyAttractions || [])]
+                                    newAttractions[attractionIndex] = e.target.value
+                                    newTrips[tripIndex] = { 
+                                      ...trip, 
+                                      detailedItinerary: {
+                                        subtitle: trip.detailedItinerary?.subtitle || '',
+                                        briefItinerary: trip.detailedItinerary?.briefItinerary || [],
+                                        keyAttractions: newAttractions,
+                                        inclusions: trip.detailedItinerary?.inclusions || []
+                                      }
+                                    }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  }}
+                                  className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                  placeholder="Key attraction"
+                                />
+                                <button
+                                  onClick={() => {
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    const newAttractions = (trip.detailedItinerary?.keyAttractions || []).filter((_, i) => i !== attractionIndex)
+                                    newTrips[tripIndex] = { 
+                                      ...trip, 
+                                      detailedItinerary: {
+                                        subtitle: trip.detailedItinerary?.subtitle || '',
+                                        briefItinerary: trip.detailedItinerary?.briefItinerary || [],
+                                        keyAttractions: newAttractions,
+                                        inclusions: trip.detailedItinerary?.inclusions || []
+                                      }
+                                    }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  }}
+                                  className="text-red-600 hover:text-red-800 text-sm"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => {
+                                const newTrips = [...(tripOptions.groupTrips || [])]
+                                const newAttractions = [...(trip.detailedItinerary?.keyAttractions || []), '']
+                                newTrips[tripIndex] = { 
+                                  ...trip, 
+                                  detailedItinerary: {
+                                    subtitle: trip.detailedItinerary?.subtitle || '',
+                                    briefItinerary: trip.detailedItinerary?.briefItinerary || [],
+                                    keyAttractions: newAttractions,
+                                    inclusions: trip.detailedItinerary?.inclusions || []
+                                  }
+                                }
+                                setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                              }}
+                              className="text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              + Add Attraction
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Inclusions */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Inclusions</label>
+                          <div className="space-y-2">
+                            {(trip.detailedItinerary?.inclusions || []).map((inclusion, inclusionIndex) => (
+                              <div key={inclusionIndex} className="flex gap-2 items-center">
+                                <input
+                                  type="text"
+                                  value={inclusion}
+                                  onChange={(e) => {
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    const newInclusions = [...(trip.detailedItinerary?.inclusions || [])]
+                                    newInclusions[inclusionIndex] = e.target.value
+                                    newTrips[tripIndex] = { 
+                                      ...trip, 
+                                      detailedItinerary: {
+                                        subtitle: trip.detailedItinerary?.subtitle || '',
+                                        briefItinerary: trip.detailedItinerary?.briefItinerary || [],
+                                        keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                        inclusions: newInclusions
+                                      }
+                                    }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  }}
+                                  className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                  placeholder="Inclusion"
+                                />
+                                <button
+                                  onClick={() => {
+                                    const newTrips = [...(tripOptions.groupTrips || [])]
+                                    const newInclusions = (trip.detailedItinerary?.inclusions || []).filter((_, i) => i !== inclusionIndex)
+                                    newTrips[tripIndex] = { 
+                                      ...trip, 
+                                      detailedItinerary: {
+                                        subtitle: trip.detailedItinerary?.subtitle || '',
+                                        briefItinerary: trip.detailedItinerary?.briefItinerary || [],
+                                        keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                        inclusions: newInclusions
+                                      }
+                                    }
+                                    setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                                  }}
+                                  className="text-red-600 hover:text-red-800 text-sm"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => {
+                                const newTrips = [...(tripOptions.groupTrips || [])]
+                                const newInclusions = [...(trip.detailedItinerary?.inclusions || []), '']
+                                newTrips[tripIndex] = { 
+                                  ...trip, 
+                                  detailedItinerary: {
+                                    subtitle: trip.detailedItinerary?.subtitle || '',
+                                    briefItinerary: trip.detailedItinerary?.briefItinerary || [],
+                                    keyAttractions: trip.detailedItinerary?.keyAttractions || [],
+                                    inclusions: newInclusions
+                                  }
+                                }
+                                setTripOptions({ ...tripOptions, groupTrips: newTrips })
+                              }}
+                              className="text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              + Add Inclusion
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )
+              })()}
             </div>
-          ))}
-          
-          <button
-            onClick={() => {
-              const newTrip: TripOption = {
-                id: `group-${Date.now()}`,
-                title: 'New Group Trip',
-                description: 'Group trip description',
-                image: '/cards/1.jpg',
-                nights: 3,
-                days: 4,
-                price: 12000,
-                category: 'group',
-                route: '',
-                trending: false,
-                detailedItinerary: {
-                  subtitle: 'Group Travel Experience',
-                  briefItinerary: [
-                    { day: 1, title: 'Day 1', description: 'Day 1 description' }
-                  ],
-                  keyAttractions: ['Attraction 1'],
-                  inclusions: ['Inclusion 1']
-                }
-              }
-              setTripOptions({ ...tripOptions, groupTrips: [...(tripOptions.groupTrips || []), newTrip] })
-            }}
-            className="w-full border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-600 hover:text-gray-800 hover:border-gray-400 transition-colors"
-          >
-            + Add New Group Trip
-          </button>
+          )}
         </div>
       </div>
 
@@ -2402,7 +2549,16 @@ const WebsiteEdit: React.FC = () => {
             {saving ? 'Saving...' : 'Save Contact'}
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input
+              type="text"
+              value={contact.phone}
+              onChange={(e) => setContact({ ...contact, phone: e.target.value })}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
@@ -2410,38 +2566,21 @@ const WebsiteEdit: React.FC = () => {
               value={contact.email}
               onChange={(e) => setContact({ ...contact, email: e.target.value })}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="you@example.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-            <input
-              type="tel"
-              value={contact.phone}
-              onChange={(e) => setContact({ ...contact, phone: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="+1 555 0100"
-            />
-          </div>
-          <div className="md:col-span-3">
             <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
             <input
               type="text"
               value={contact.address}
               onChange={(e) => setContact({ ...contact, address: e.target.value })}
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Street, City, Country"
             />
           </div>
         </div>
       </div>
-
-      {/* Itinerary builder entry removed as requested. Use sidebar "Packages" to manage. */}
-      
     </div>
   )
 }
 
 export default WebsiteEdit
-
-
