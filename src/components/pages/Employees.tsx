@@ -236,16 +236,6 @@ const Employees: React.FC = () => {
         setNewEmployee({ name: '', email: '', phone: '', destination: '', password: '' })
         alert('Employee created successfully! However, there was an issue sending the email. Please share credentials manually.')
       }
-    } else {
-      let errorMessage = 'Unknown error'
-      if (error?.message) {
-        if (error.message.includes('duplicate key value violates unique constraint "employees_email_key"')) {
-          errorMessage = 'An employee with this email already exists. Please use a different email address.'
-        } else {
-          errorMessage = error.message
-        }
-      }
-      alert(`Failed to save employee: ${errorMessage}`)
     }
   }
 
