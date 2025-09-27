@@ -116,6 +116,23 @@ const Employees: React.FC = () => {
     
     const passwordHash = await bcrypt.hash(newEmployee.password, 10)
 
+    // First create Supabase Auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: newEmployee.email,
+      password: newEmployee.password,
+      options: {
+        data: {
+          name: newEmployee.name,
+          role: 'employee'
+        }
+      }
+    })
+
+    if (authError) {
+      alert(`Failed to create user account: ${authError.message}`)
+      return
+    }
+
     const payload = { 
       name: newEmployee.name,
       email: newEmployee.email,
@@ -123,7 +140,8 @@ const Employees: React.FC = () => {
       destination: newEmployee.destination,
       role: 'employee', 
       status: 'Active',
-      password_hash: passwordHash
+      password_hash: passwordHash,
+      supabase_user_id: authData.user?.id
     }
     const { data, error } = await supabase
       .from('employees')
