@@ -11,7 +11,6 @@ import Settings from '../pages/Settings'
 import WebsiteEdit from '../pages/cms/WebsiteEdit'
 import Employees from '../pages/Employees'
 import Login from '../../pages/Login'
-import Signup from '../../pages/Signup'
 import ProtectedRoute from '../auth/ProtectedRoute'
 
 const Routers: React.FC = () => {
@@ -19,7 +18,6 @@ const Routers: React.FC = () => {
     <Routes>
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
       
       {/* Protected routes */}
       <Route path="/" element={
@@ -48,7 +46,7 @@ const Routers: React.FC = () => {
         </ProtectedRoute>
       } />
       <Route path="/employees" element={
-        <ProtectedRoute requiredRole="admin">
+        <ProtectedRoute requiredRole="Super Admin">
           <Employees />
         </ProtectedRoute>
       } />
@@ -68,7 +66,7 @@ const Routers: React.FC = () => {
         </ProtectedRoute>
       } />
       <Route path="/settings" element={
-        <ProtectedRoute requiredRole="admin">
+        <ProtectedRoute requiredRole="Super Admin">
           <Settings />
         </ProtectedRoute>
       } />

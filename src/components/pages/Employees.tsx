@@ -8,7 +8,7 @@ interface Employee {
   name: string
   email: string
   phone: string
-  location: string
+  destination: string
   role: string
   status: 'Active' | 'Inactive'
 }
@@ -17,7 +17,7 @@ interface NewEmployee {
   name: string
   email: string
   phone: string
-  location: string
+  destination: string
   password: string
 }
 
@@ -31,7 +31,7 @@ const Employees: React.FC = () => {
     name: '', 
     email: '', 
     phone: '', 
-    location: '',
+    destination: '',
     password: ''
   })
 
@@ -55,8 +55,8 @@ const Employees: React.FC = () => {
           name: e.name,
           email: e.email,
           phone: e.phone,
-          location: e.location,
-          role: e.role || 'Agent',
+          destination: e.destination,
+          role: e.role || 'employee',
           status: e.status || 'Active'
         })))
       } else if (error && (error.code === '42P01' || /relation .* employees .* does not exist/i.test(error.message))) {
@@ -74,8 +74,8 @@ const Employees: React.FC = () => {
               name: e.name,
               email: e.email,
               phone: e.phone,
-              location: e.location,
-              role: e.role || 'Agent',
+              destination: e.destination,
+              role: e.role || 'employee',
               status: e.status || 'Active'
             })))
           }
@@ -105,8 +105,8 @@ const Employees: React.FC = () => {
       name: newEmployee.name,
       email: newEmployee.email,
       phone: newEmployee.phone,
-      location: newEmployee.location,
-      role: 'Agent', 
+      destination: newEmployee.destination,
+      role: 'employee', 
       status: 'Active',
       password_hash: passwordHash
     }
@@ -117,17 +117,56 @@ const Employees: React.FC = () => {
       .single()
     
     if (!error && data) {
-      setEmployees(prev => [{
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        location: data.location,
-        role: data.role,
-        status: data.status
-      }, ...prev])
-      setShowCreateModal(false)
-      setNewEmployee({ name: '', email: '', phone: '', location: '', password: '' })
+      // Send email with credentials
+      try {
+        const emailResponse = await fetch('/api/email/send-credentials', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: newEmployee.name,
+            email: newEmployee.email,
+            password: newEmployee.password,
+            role: 'employee',
+            destination: newEmployee.destination
+          }),
+        })
+
+        const emailResult = await emailResponse.json()
+
+        setEmployees(prev => [{
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          destination: data.destination,
+          role: data.role,
+          status: data.status
+        }, ...prev])
+        setShowCreateModal(false)
+        setNewEmployee({ name: '', email: '', phone: '', destination: '', password: '' })
+        
+        if (emailResult.success) {
+          alert('Employee created successfully! Credentials have been sent to their email.')
+        } else {
+          alert('Employee created successfully! However, there was an issue sending the email. Please share credentials manually.')
+        }
+      } catch (emailError) {
+        console.error('Email sending error:', emailError)
+        setEmployees(prev => [{
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          destination: data.destination,
+          role: data.role,
+          status: data.status
+        }, ...prev])
+        setShowCreateModal(false)
+        setNewEmployee({ name: '', email: '', phone: '', destination: '', password: '' })
+        alert('Employee created successfully! However, there was an issue sending the email. Please share credentials manually.')
+      }
     } else {
       alert(`Failed to save employee: ${error?.message || 'Unknown error'}`)
     }
@@ -197,7 +236,7 @@ const Employees: React.FC = () => {
                   <div className="ml-4">
                     <div className="text-sm font-medium text-gray-900">{emp.name}</div>
                     <div className="text-sm text-gray-500">{emp.email}</div>
-                    {emp.location && <div className="text-xs text-gray-400">{emp.location}</div>}
+                    {emp.destination && <div className="text-xs text-gray-400">{emp.destination}</div>}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -218,8 +257,8 @@ const Employees: React.FC = () => {
         <div className="fixed inset-0 bg-black/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white">
             <div className="mt-1">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Add Employee</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-base font-medium text-gray-900">Add Employee</h3>
                 <button 
                   onClick={() => setShowCreateModal(false)} 
                   className="text-gray-400 hover:text-gray-600"
@@ -227,29 +266,29 @@ const Employees: React.FC = () => {
                   ✕
                 </button>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Name</label>
                   <input
                     type="text"
                     value={newEmployee.name}
                     onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Full name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
                   <input
                     type="email"
                     value={newEmployee.email}
                     onChange={(e) => setNewEmployee({ ...newEmployee, email: e.target.value })}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="email@example.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Phone</label>
                   <input
                     type="tel"
                     inputMode="numeric"
@@ -260,42 +299,42 @@ const Employees: React.FC = () => {
                       const digitsOnly = e.target.value.replace(/[^0-9]/g, '').slice(0, 10)
                       setNewEmployee({ ...newEmployee, phone: digitsOnly })
                     }}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="10-digit number"
                     title="Enter a 10-digit phone number"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Destination</label>
                   <input
                     type="text"
-                    value={newEmployee.location}
-                    onChange={(e) => setNewEmployee({ ...newEmployee, location: e.target.value })}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="City, Country"
+                    value={newEmployee.destination}
+                    onChange={(e) => setNewEmployee({ ...newEmployee, destination: e.target.value })}
+                    className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Preferred destination"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Password</label>
                   <input
                     type="password"
                     value={newEmployee.password}
                     onChange={(e) => setNewEmployee({ ...newEmployee, password: e.target.value })}
-                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Minimum 6 characters"
                   />
                 </div>
               </div>
-              <div className="mt-6 flex justify-end space-x-3">
+              <div className="mt-4 flex justify-end space-x-3">
                 <button 
                   onClick={() => setShowCreateModal(false)} 
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+                  className="px-3 py-1.5 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCreateEmployee}
-                  className="px-4 py-2 bg-primary text-white rounded-md hover:opacity-90"
+                  className="px-3 py-1.5 bg-primary text-white rounded-md hover:opacity-90 text-sm"
                 >
                   Save Employee
                 </button>

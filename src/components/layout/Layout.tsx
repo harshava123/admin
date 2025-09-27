@@ -90,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }
 
   // Don't render layout for auth pages
-  if (location.pathname === '/login' || location.pathname === '/signup') {
+  if (location.pathname === '/login') {
     return <>{children}</>
   }
 

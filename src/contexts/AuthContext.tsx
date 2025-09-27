@@ -19,6 +19,8 @@ interface AuthContextType {
   logout: () => void
   loading: boolean
   isAuthenticated: boolean
+  isFirstLogin: boolean
+  checkFirstLogin: (email: string) => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -31,6 +33,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isFirstLogin, setIsFirstLogin] = useState(false)
 
   useEffect(() => {
     // Get initial session
@@ -135,6 +138,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     await supabase.auth.signOut()
     setUser(null)
     setToken(null)
+    setIsFirstLogin(false)
+  }
+
+  const checkFirstLogin = async (email: string): Promise<boolean> => {
+    try {
+      const response = await fetch('/api/auth/check-first-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+      if (response.ok) {
+        setIsFirstLogin(data.isFirstLogin)
+        return data.isFirstLogin
+      }
+      return false
+    } catch (error) {
+      console.error('Error checking first login:', error)
+      return false
+    }
   }
 
   const value: AuthContextType = {
@@ -145,6 +171,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     loading,
     isAuthenticated: !!user && !!token,
+    isFirstLogin,
+    checkFirstLogin,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

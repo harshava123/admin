@@ -7,12 +7,11 @@ import logo from '../../assets/images/logo.png'
 import travelIllustration from '../../assets/images/in.png'
 import { EyeIcon, EyeSlashIcon } from '../ui/Icons'
 import { useAuth } from '../../contexts/AuthContext'
+import ChangePasswordModal from './ChangePasswordModal'
 
-interface LoginFormProps {
-  onSwitchToSignup?: () => void
-}
+interface LoginFormProps {}
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup }) => {
+const LoginForm: React.FC<LoginFormProps> = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -20,8 +19,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { login, checkFirstLogin } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -43,13 +43,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup }) => {
       // Use AuthContext login method
       await login(formData.email, formData.password)
       
-      // Redirect to dashboard
-      navigate('/')
+      // Check if this is the user's first login
+      const isFirstLogin = await checkFirstLogin(formData.email)
+      
+      if (isFirstLogin) {
+        setShowChangePasswordModal(true)
+      } else {
+        navigate('/')
+      }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  const handlePasswordChangeSuccess = () => {
+    setShowChangePasswordModal(false)
+    navigate('/')
   }
 
   return (
@@ -181,20 +192,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup }) => {
             </div>
 
             <div className="text-center">
-                     <p className="text-sm text-gray-400">
-                       Don&apos;t have an account?{' '}
-                <button
-                  type="button"
-                  onClick={onSwitchToSignup}
-                  className="font-medium text-teal-400 hover:text-teal-300 transition-colors"
-                >
-                  Sign up
-                </button>
+              <p className="text-sm text-gray-400">
+                Contact your administrator for account access
               </p>
             </div>
           </form>
         </div>
       </div>
+
+      {/* Change Password Modal */}
+      <ChangePasswordModal
+        isOpen={showChangePasswordModal}
+        onClose={() => setShowChangePasswordModal(false)}
+        onSuccess={handlePasswordChangeSuccess}
+        userEmail={formData.email}
+      />
     </div>
   )
 }
