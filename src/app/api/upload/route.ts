@@ -26,6 +26,7 @@ export async function POST(request: Request) {
 		const file = form.get('file') as File | null
 		const slug = (form.get('slug') as string | null) || 'common'
 		const folder = (form.get('folder') as string | null) || 'hero'
+		const path = form.get('path') as string | null
 
 		if (!file) {
 			return NextResponse.json({ error: 'file is required' }, { status: 400 })
@@ -33,18 +34,32 @@ export async function POST(request: Request) {
 
 		const supabase = createClient(supabaseUrl, serviceKey)
 
-		// Ensure deterministic path: folder/slug/timestamp-filename
-		const timestamp = Date.now()
-		const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_') || 'upload'
-		const path = `${folder}/${slug}/${timestamp}-${safeName}`
+		// Determine bucket based on path
+		let targetBucket = bucket
+		if (path && path.includes('trip-options')) {
+			targetBucket = 'tripoptions'
+		}
+
+		// Use provided path or generate deterministic path: folder/slug/timestamp-filename
+		let finalPath: string
+		if (path) {
+			const timestamp = Date.now()
+			const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_') || 'upload'
+			finalPath = `${path}/${timestamp}-${safeName}`
+		} else {
+			const timestamp = Date.now()
+			const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_') || 'upload'
+			finalPath = `${folder}/${slug}/${timestamp}-${safeName}`
+		}
 		
 		console.log('Upload API - File:', file.name, 'Size:', file.size, 'Type:', file.type)
-		console.log('Upload API - Path:', path)
+		console.log('Upload API - Target Bucket:', targetBucket)
+		console.log('Upload API - Final Path:', finalPath)
 
 		const arrayBuffer = await file.arrayBuffer()
 		const { error: uploadError } = await supabase.storage
-			.from(bucket)
-			.upload(path, Buffer.from(arrayBuffer), {
+			.from(targetBucket)
+			.upload(finalPath, Buffer.from(arrayBuffer), {
 				upsert: true,
 				contentType: file.type || 'application/octet-stream'
 			})
@@ -54,9 +69,9 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: uploadError.message }, { status: 500 })
 		}
 
-		const { data } = supabase.storage.from(bucket).getPublicUrl(path)
+		const { data } = supabase.storage.from(targetBucket).getPublicUrl(finalPath)
 		console.log('Upload API - Success! URL:', data.publicUrl)
-		return NextResponse.json({ ok: true, url: data.publicUrl, path })
+		return NextResponse.json({ ok: true, url: data.publicUrl, path: finalPath })
 	} catch (e: any) {
 		return NextResponse.json({ error: e?.message || 'Upload failed' }, { status: 500 })
 	}
