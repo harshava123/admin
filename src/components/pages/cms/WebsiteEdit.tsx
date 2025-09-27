@@ -809,30 +809,30 @@ const WebsiteEdit: React.FC = () => {
   // No city selected → show the 7 location cards
   if (!citySlug) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Choose a Location</h1>
-            <p className="text-gray-600">Select a location to edit its website content</p>
+            <h1 className="text-xl font-semibold text-gray-900">Choose a Location</h1>
+            <p className="text-sm text-gray-600">Select a location to edit its website content</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {LOCATIONS.map(loc => (
             <button
               key={loc.slug}
               onClick={() => setCitySlug(loc.slug)}
-              className="group bg-white shadow hover:shadow-md transition-shadow rounded-lg p-6 text-left border border-gray-100"
+              className="group bg-white border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all rounded-lg p-4 text-left"
             >
-              <div className="h-28 w-full rounded-md bg-gradient-to-r from-gray-100 to-gray-200 mb-4 flex items-center justify-center">
-                <span className="text-gray-500 font-semibold text-lg">{loc.name}</span>
+              <div className="h-20 w-full rounded-md bg-gradient-to-r from-gray-50 to-gray-100 mb-3 flex items-center justify-center">
+                <span className="text-gray-500 font-medium text-sm">{loc.name}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{loc.name}</h3>
-                  <p className="text-gray-600 text-sm">Edit content & images</p>
+                  <h3 className="text-sm font-medium text-gray-900">{loc.name}</h3>
+                  <p className="text-xs text-gray-500">Edit content & images</p>
                 </div>
-                <span className="text-primary group-hover:translate-x-0.5 transition-transform">→</span>
+                <span className="text-primary group-hover:translate-x-0.5 transition-transform text-sm">→</span>
               </div>
             </button>
           ))}
@@ -843,23 +843,23 @@ const WebsiteEdit: React.FC = () => {
 
   // City selected → show the existing editor UI for that scope
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Website Editor · {cityName}</h1>
-          <p className="text-gray-600">Manage content and images for this location only</p>
+          <h1 className="text-lg font-semibold text-gray-900">Website Editor · {cityName}</h1>
+          <p className="text-sm text-gray-600">Manage content and images for this location only</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setCitySlug('')}
-            className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50"
+            className="px-3 py-1.5 text-sm rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
           >
             Change Location
           </button>
           <button
             onClick={saveAll}
             disabled={saving}
-            className={`px-4 py-2 rounded-lg text-white ${saving ? 'bg-gray-400' : 'bg-primary hover:opacity-90'}`}
+            className={`px-3 py-1.5 text-sm rounded-md text-white transition-colors ${saving ? 'bg-gray-400' : 'bg-primary hover:bg-primary/90'}`}
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
@@ -867,61 +867,61 @@ const WebsiteEdit: React.FC = () => {
       </div>
 
       {error && (
-        <div className="bg-red-50 text-red-700 px-4 py-3 rounded">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-md text-sm">
           {error}
         </div>
       )}
 
       {/* Hero Section */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Hero Section</h2>
-        <div className="flex justify-end mb-4">
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-medium text-gray-900">Hero Section</h2>
           <button
             onClick={() => saveSection('Hero', { hero })}
             disabled={saving}
-            className="px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+            className="px-3 py-1.5 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
           >
             {saving ? 'Saving...' : 'Save Hero'}
           </button>
         </div>
-          <div className="space-y-4">
-            <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Title
             </label>
-              <input
-                type="text"
-                value={hero.title}
+            <input
+              type="text"
+              value={hero.title}
               onChange={(e) => setHero(prev => ({ ...prev, title: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="Hero title"
-              />
-            </div>
-            <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Subtitle
             </label>
-              <input
-                type="text"
-                value={hero.subtitle}
+            <input
+              type="text"
+              value={hero.subtitle}
               onChange={(e) => setHero(prev => ({ ...prev, subtitle: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="Hero subtitle"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Background Image URL
             </label>
             <input
               type="url"
               value={hero.backgroundImageUrl}
               onChange={(e) => setHero(prev => ({ ...prev, backgroundImageUrl: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="https://example.com/image.jpg"
             />
-            <div className="mt-3">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="mt-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Or upload image
               </label>
               <input
@@ -955,14 +955,14 @@ const WebsiteEdit: React.FC = () => {
                     setError(err?.message || 'Failed to upload image')
                   }
                 }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               />
             </div>
 
             {hero.backgroundImageUrl && (
-              <div className="mt-3">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
-                <div className="relative w-full h-40 rounded-md overflow-hidden border border-gray-200">
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Preview</label>
+                <div className="relative w-full h-32 rounded-md overflow-hidden border border-gray-200">
                   <Image
                     src={hero.backgroundImageUrl}
                     alt="Hero background preview"
@@ -971,7 +971,7 @@ const WebsiteEdit: React.FC = () => {
                     unoptimized
                   />
                 </div>
-                <div className="mt-2">
+                <div className="mt-1.5">
                   <button
                     type="button"
                     onClick={() => setHero(prev => ({ ...prev, backgroundImageUrl: '' }))}
@@ -984,25 +984,25 @@ const WebsiteEdit: React.FC = () => {
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               WhatsApp Phone
             </label>
             <input
               type="text"
               value={hero.whatsappPhone}
               onChange={(e) => setHero(prev => ({ ...prev, whatsappPhone: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="+919876543210"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               WhatsApp Message
             </label>
             <textarea
               value={hero.whatsappMessage}
               onChange={(e) => setHero(prev => ({ ...prev, whatsappMessage: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               rows={3}
               placeholder="WhatsApp message template"
             />
@@ -1011,53 +1011,53 @@ const WebsiteEdit: React.FC = () => {
       </div>
 
       {/* Reviews Section */}
-      <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Reviews Section</h2>
-        <div className="flex justify-end mb-4">
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-medium text-gray-900">Reviews Section</h2>
           <button
             onClick={() => saveSection('Reviews', { reviews })}
             disabled={saving}
-            className="px-4 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400"
+            className="px-3 py-1.5 text-sm rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
           >
             {saving ? 'Saving...' : 'Save Reviews'}
           </button>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Heading
             </label>
             <input
               type="text"
               value={reviews.heading}
               onChange={(e) => setReviews(prev => ({ ...prev, heading: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="Reviews heading"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Subheading
             </label>
             <input
               type="text"
               value={reviews.subheading}
               onChange={(e) => setReviews(prev => ({ ...prev, subheading: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               placeholder="Reviews subheading"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Reviews ({reviews.reviews.length})
             </label>
             
             {/* Review Selector Dropdown */}
-            <div className="mb-4">
+            <div className="mb-3">
               <select
                 value={selectedReview}
                 onChange={(e) => setSelectedReview(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
                 <option value="">Select a review to edit</option>
                 {reviews.reviews.map((review, index) => (
@@ -1069,7 +1069,7 @@ const WebsiteEdit: React.FC = () => {
             </div>
 
             {/* Add New Review Button */}
-            <div className="mb-4">
+            <div className="mb-3">
               <button
                 onClick={() => {
                   const newReview = {
@@ -1084,7 +1084,7 @@ const WebsiteEdit: React.FC = () => {
                   }))
                   setSelectedReview(newReview.id)
                 }}
-                className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-gray-400 hover:text-gray-700"
+                className="w-full py-2 text-sm border-2 border-dashed border-gray-200 rounded-md text-gray-600 hover:border-gray-300 hover:text-gray-700 transition-colors"
               >
                 Add New Review
               </button>
@@ -1092,15 +1092,15 @@ const WebsiteEdit: React.FC = () => {
 
             {/* Selected Review Edit Form */}
             {selectedReview && reviews.reviews.find(r => r.id === selectedReview) && (
-              <div className="border border-gray-200 rounded-lg p-4">
+              <div className="border border-gray-200 rounded-md p-3">
                 {(() => {
                   const review = reviews.reviews.find(r => r.id === selectedReview)!
                   const index = reviews.reviews.findIndex(r => r.id === selectedReview)
                   
                   return (
                     <>
-                      <div className="flex justify-between items-center mb-4">
-                        <h4 className="text-md font-medium text-gray-800">Review {index + 1}</h4>
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="text-sm font-medium text-gray-800">Review {index + 1}</h4>
                         <button
                           onClick={() => {
                             setReviews(prev => ({
@@ -1109,14 +1109,14 @@ const WebsiteEdit: React.FC = () => {
                             }))
                             setSelectedReview('')
                           }}
-                          className="text-red-600 hover:text-red-800 text-sm"
+                          className="text-red-600 hover:text-red-800 text-xs"
                         >
                           Remove
                         </button>
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
                             Name
                           </label>
                           <input
@@ -1128,12 +1128,12 @@ const WebsiteEdit: React.FC = () => {
                                 r.id === review.id ? { ...r, name: e.target.value } : r
                               )
                             }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
                             placeholder="Reviewer name"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-xs font-medium text-gray-700 mb-1">
                             Review Text
                           </label>
                           <textarea
@@ -1144,14 +1144,14 @@ const WebsiteEdit: React.FC = () => {
                                 r.id === review.id ? { ...r, review: e.target.value } : r
                               )
                             }))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            rows={3}
+                            className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                            rows={2}
                             placeholder="Review text"
                           />
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-2 gap-2">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
                               Image 1 URL
                             </label>
                             <input
@@ -1169,12 +1169,12 @@ const WebsiteEdit: React.FC = () => {
                                   } : r
                                 )
                               }))}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
                               placeholder="First image URL"
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-gray-700 mb-1">
                               Image 2 URL
                             </label>
                             <input
@@ -1192,7 +1192,7 @@ const WebsiteEdit: React.FC = () => {
                                   } : r
                                 )
                               }))}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              className="w-full px-2 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
                               placeholder="Second image URL"
                             />
                           </div>
