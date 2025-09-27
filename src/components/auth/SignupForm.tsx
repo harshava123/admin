@@ -6,6 +6,7 @@ import Image from 'next/image'
 import logo from '../../assets/images/logo.png'
 import travelIllustration from '../../assets/images/in.png'
 import { EyeIcon, EyeSlashIcon } from '../ui/Icons'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface SignupFormProps {
   onSwitchToLogin?: () => void
@@ -24,6 +25,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const { signup } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -55,30 +57,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin }) => {
     setError('')
 
     try {
-      // TODO: Replace with actual API call
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Signup failed')
-      }
-
-      // Store auth token
-      localStorage.setItem('authToken', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-
+      // Use AuthContext signup method
+      await signup(formData.name, formData.email, formData.password, formData.role)
+      
       // Redirect to dashboard
       navigate('/')
     } catch (err: any) {

@@ -983,7 +983,7 @@ const WebsiteEdit: React.FC = () => {
             />
           </div>
         </div>
-      </div>
+        </div>
       )}
 
       {/* Hero Section */}
@@ -2415,9 +2415,9 @@ const WebsiteEdit: React.FC = () => {
                 })()}
                 </div>
             )}
+            </div>
           </div>
         </div>
-      </div>
       )}
 
       {/* USP Section */}

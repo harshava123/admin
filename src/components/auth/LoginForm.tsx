@@ -6,6 +6,7 @@ import Image from 'next/image'
 import logo from '../../assets/images/logo.png'
 import travelIllustration from '../../assets/images/in.png'
 import { EyeIcon, EyeSlashIcon } from '../ui/Icons'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface LoginFormProps {
   onSwitchToSignup?: () => void
@@ -20,6 +21,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -37,26 +39,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup }) => {
 
     try {
       console.log('Sending login data:', formData)
-      // TODO: Replace with actual API call
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const data = await response.json()
-      console.log('Login response:', { status: response.status, data })
-
-      if (!response.ok) {
-        throw new Error(data.error || data.message || 'Login failed')
-      }
-
-      // Store auth token
-      localStorage.setItem('authToken', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
-
+      
+      // Use AuthContext login method
+      await login(formData.email, formData.password)
+      
       // Redirect to dashboard
       navigate('/')
     } catch (err: any) {
@@ -195,8 +181,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup }) => {
             </div>
 
             <div className="text-center">
-              <p className="text-sm text-gray-400">
-                Don't have an account?{' '}
+                     <p className="text-sm text-gray-400">
+                       Don&apos;t have an account?{' '}
                 <button
                   type="button"
                   onClick={onSwitchToSignup}

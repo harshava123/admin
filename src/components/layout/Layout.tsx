@@ -64,6 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false)
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false)
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout, isAuthenticated } = useAuth()
@@ -83,8 +84,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     navigate('/login')
   }
 
+  const confirmLogout = () => {
+    setShowLogoutModal(false)
+    handleLogout()
+  }
+
   // Don't render layout for auth pages
-  if (!isAuthenticated && (location.pathname === '/login' || location.pathname === '/signup')) {
+  if (location.pathname === '/login' || location.pathname === '/signup') {
     return <>{children}</>
   }
 
@@ -138,7 +144,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 mt-4 px-2 overflow-y-auto">
+        <nav className="flex-1 mt-4 px-2">
           <div className="space-y-3">
             {navigationSections.map((section, idx) => (
               <div key={idx}>
@@ -199,7 +205,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
           {!sidebarCollapsed && (
             <button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutModal(true)}
               className="w-full mt-2 px-2 py-1 text-xs text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
             >
               Sign out
@@ -242,20 +248,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               
               {/* Right side */}
               <div className="flex items-center space-x-2">
-                {/* Notifications */}
+                {/* Notifications Bell Icon */}
                 <button className="relative p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4.343 7.757A9.962 9.962 0 0012 5c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.44.306-2.813.857-4.05" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-6-6V4c0-1.657-1.343-3-3-3S9 2.343 9 4v7l-6 6v1h12v-1zM12 22c1.103 0 2-.897 2-2h-4c0 1.103.897 2 2 2z" />
                   </svg>
                   <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 bg-red-500 rounded-full"></span>
                 </button>
                 
-                       {/* User Avatar */}
-                       <div className="h-6 w-6 bg-primary rounded-full flex items-center justify-center">
-                         <span className="text-white text-xs font-medium">
-                           {user?.name?.charAt(0).toUpperCase() || 'U'}
-                         </span>
-                       </div>
+                {/* User Avatar with Logout Modal */}
+                <button 
+                  onClick={() => setShowLogoutModal(true)}
+                  className="h-6 w-6 bg-primary rounded-full flex items-center justify-center hover:bg-primary/80 transition-colors"
+                  title="Click to logout"
+                >
+                  <span className="text-white text-xs font-medium">
+                    {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  </span>
+                </button>
               </div>
             </div>
           </div>
@@ -268,6 +278,51 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </main>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop with light transparency */}
+          <div 
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+            onClick={() => setShowLogoutModal(false)}
+          />
+          
+          {/* Modal */}
+          <div className="relative bg-white rounded-lg shadow-xl p-6 max-w-sm w-full mx-4">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <svg className="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </div>
+              
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Confirm Logout
+              </h3>
+              
+              <p className="text-sm text-gray-500 mb-6">
+                Are you sure you want to logout? You will need to sign in again to access the admin panel.
+              </p>
+              
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
