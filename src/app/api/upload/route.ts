@@ -17,10 +17,12 @@ export async function POST(request: Request) {
 		const supabaseUrl = getEnv('NEXT_PUBLIC_SUPABASE_URL')
 		const serviceKey = getEnv('SUPABASE_SERVICE_ROLE_KEY')
 		const bucket = process.env.SUPABASE_PUBLIC_BUCKET || 'city-assets'
+		const tripOptionsBucket = process.env.SUPABASE_TRIPOPTIONS_BUCKET || 'tripoptions'
 		
 		console.log('Upload API - Supabase URL:', supabaseUrl ? 'SET' : 'MISSING')
 		console.log('Upload API - Service Key:', serviceKey ? 'SET' : 'MISSING')
-		console.log('Upload API - Bucket:', bucket)
+		console.log('Upload API - City Bucket:', bucket)
+		console.log('Upload API - Trip Options Bucket:', tripOptionsBucket)
 
 		const form = await request.formData()
 		const file = form.get('file') as File | null
@@ -37,7 +39,7 @@ export async function POST(request: Request) {
 		// Determine bucket based on path
 		let targetBucket = bucket
 		if (path && path.includes('trip-options')) {
-			targetBucket = 'tripoptions'
+			targetBucket = tripOptionsBucket
 		}
 
 		// Use provided path or generate deterministic path: folder/slug/timestamp-filename
