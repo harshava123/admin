@@ -8,6 +8,7 @@ interface HeroContent {
   title: string
   subtitle: string
   backgroundImageUrl: string
+  mobileVideoUrl: string
   whatsappPhone: string
   whatsappMessage: string
 }
@@ -198,6 +199,7 @@ const WebsiteEdit: React.FC = () => {
     title: 'Discover Your Next Adventure',
     subtitle: 'Curated experiences across the globe',
     backgroundImageUrl: '',
+    mobileVideoUrl: '',
     whatsappPhone: '+919876543210',
     whatsappMessage: 'Hi! I am interested in your tour packages. Can you help me plan my trip?'
   })
@@ -1096,6 +1098,67 @@ const WebsiteEdit: React.FC = () => {
               </div>
             )}
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Mobile Video (MP4/WebM)
+            </label>
+            <input
+              type="file"
+              accept="video/mp4,video/webm"
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                if (file) {
+                  // Check file size (20MB limit for videos)
+                  const maxSize = 20 * 1024 * 1024 // 20MB
+                  if (file.size > maxSize) {
+                    alert(`File too large. Maximum size is 20MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the video and try again.`)
+                    return
+                  }
+
+                  try {
+                    const form = new FormData()
+                    form.append('file', file)
+                    form.append('slug', citySlug || 'common')
+                    form.append('folder', 'hero')
+
+                    const res = await fetch('/api/upload', { method: 'POST', body: form })
+                    if (!res.ok) {
+                      const err = await res.json().catch(() => ({}))
+                      throw new Error(err.error || 'Upload failed')
+                    }
+                    const data = await res.json()
+                    setHero(prev => ({ ...prev, mobileVideoUrl: data.url }))
+                  } catch (err: any) {
+                    setError(err?.message || 'Failed to upload video')
+                  }
+                }
+              }}
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+            />
+          </div>
+
+          {hero.mobileVideoUrl && (
+            <div className="mt-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Video Preview</label>
+              <div className="relative w-full h-32 rounded-md overflow-hidden border border-gray-200">
+                <video
+                  src={hero.mobileVideoUrl}
+                  className="w-full h-full object-cover"
+                  controls
+                  muted
+                />
+              </div>
+              <div className="mt-1.5">
+                <button
+                  type="button"
+                  onClick={() => setHero(prev => ({ ...prev, mobileVideoUrl: '' }))}
+                  className="text-xs text-red-600 hover:text-red-800"
+                >
+                  Remove Video
+                </button>
+              </div>
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               WhatsApp Phone
