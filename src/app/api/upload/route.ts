@@ -48,6 +48,8 @@ export async function POST(request: Request) {
 		let targetBucket = bucket
 		if (path && path.includes('trip-options')) {
 			targetBucket = tripOptionsBucket
+		} else if (path && path.includes('brands')) {
+			targetBucket = bucket // Use city-assets bucket for brand logos
 		}
 
 		// Use provided path or generate deterministic path: folder/slug/timestamp-filename

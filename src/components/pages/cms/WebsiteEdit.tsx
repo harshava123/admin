@@ -1378,18 +1378,40 @@ const WebsiteEdit: React.FC = () => {
                         onChange={async (e) => {
                     const file = e.target.files?.[0]
                           if (file) {
+                            // Check file size (4MB limit)
+                            const maxSize = 4 * 1024 * 1024 // 4MB
+                            if (file.size > maxSize) {
+                              alert(`File too large. Maximum size is 4MB. Your file is ${(file.size / (1024 * 1024)).toFixed(2)}MB. Please compress the image and try again.`)
+                              return
+                            }
+
                             try {
-                              const base64 = await fileToBase64(file)
-                              setBrandImageFiles(prev => ({ ...prev, [brand.id]: file }))
-                              setBrands({
-                                ...brands,
-                                brands: brands.brands.map(b => 
-                                  b.id === brand.id ? { ...b, logoUrl: base64 } : b
-                                )
+                              const formData = new FormData()
+                              formData.append('file', file)
+                              formData.append('path', `brands/${brand.id}`)
+                              
+                              const uploadRes = await fetch('/api/upload', {
+                                method: 'POST',
+                                body: formData
                               })
+                              
+                              if (uploadRes.ok) {
+                                const { url } = await uploadRes.json()
+                                setBrandImageFiles(prev => ({ ...prev, [brand.id]: file }))
+                                setBrands({
+                                  ...brands,
+                                  brands: brands.brands.map(b => 
+                                    b.id === brand.id ? { ...b, logoUrl: url } : b
+                                  )
+                                })
+                              } else {
+                                const errorData = await uploadRes.json()
+                                console.error('Upload failed:', errorData)
+                                alert(`Upload failed: ${errorData.error || 'Unknown error'}`)
+                              }
                             } catch (error) {
-                              console.error('Error converting file to base64:', error)
-                              alert('Error uploading image. Please try again.')
+                              console.error('Upload error:', error)
+                              alert('Upload failed. Please try again.')
                             }
                           }
                         }}
