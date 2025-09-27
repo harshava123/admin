@@ -78,16 +78,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log('Attempting login with:', { email, password: '***' })
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
+      console.log('Login response:', { data: data ? 'success' : 'no data', error })
+
       if (error) {
+        console.error('Login error:', error)
         throw new Error(error.message)
       }
 
       if (data.user) {
+        console.log('User data:', data.user)
         setUser({
           id: data.user.id,
           name: data.user.user_metadata?.name || data.user.email?.split('@')[0] || 'User',
@@ -98,6 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setToken(data.session?.access_token || '')
       }
     } catch (error) {
+      console.error('Login catch error:', error)
       throw error
     }
   }
