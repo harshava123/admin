@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '../../../lib/supabaseServer'
+import { supabaseServer } from '../../../lib/supabaseServer'
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user from employees table
-    const { data: employee, error: fetchError } = await supabase
+    const { data: employee, error: fetchError } = await supabaseServer
       .from('employees')
       .select('is_first_login')
       .eq('email', email)

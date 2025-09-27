@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '../../../lib/supabaseServer'
+import { supabaseServer } from '../../../lib/supabaseServer'
 import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user from employees table
-    const { data: employee, error: fetchError } = await supabase
+    const { data: employee, error: fetchError } = await supabaseServer
       .from('employees')
       .select('*')
       .eq('email', email)
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     const newPasswordHash = await bcrypt.hash(newPassword, 10)
 
     // Update password and mark as not first login
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseServer
       .from('employees')
       .update({ 
         password_hash: newPasswordHash,
