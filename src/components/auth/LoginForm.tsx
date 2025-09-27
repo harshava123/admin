@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Image from 'next/image'
 import logo from '../../assets/images/logo.png'
@@ -20,7 +20,26 @@ const LoginForm: React.FC<LoginFormProps> = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
+  const [shouldRedirect, setShouldRedirect] = useState(false)
   const { login, checkFirstLogin, user } = useAuth()
+
+  // Handle redirect after user state is updated
+  useEffect(() => {
+    if (shouldRedirect && user) {
+      const userRole = user.role
+      console.log('useEffect - User role for redirect:', userRole)
+      console.log('useEffect - Full user object:', user)
+      
+      if (userRole === 'employee') {
+        console.log('useEffect - Redirecting to employee dashboard')
+        window.location.href = '/employee'
+      } else {
+        console.log('useEffect - Redirecting to admin dashboard')
+        window.location.href = '/'
+      }
+      setShouldRedirect(false)
+    }
+  }, [user, shouldRedirect])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -48,13 +67,8 @@ const LoginForm: React.FC<LoginFormProps> = () => {
       if (isFirstLogin) {
         setShowChangePasswordModal(true)
       } else {
-        // Redirect based on user role
-        const userRole = user?.role
-        if (userRole === 'employee') {
-          window.location.href = '/employee'
-        } else {
-          window.location.href = '/'
-        }
+        // Set flag to trigger redirect in useEffect
+        setShouldRedirect(true)
       }
     } catch (err: any) {
       setError(err.message || 'Login failed. Please try again.')
@@ -65,13 +79,8 @@ const LoginForm: React.FC<LoginFormProps> = () => {
 
   const handlePasswordChangeSuccess = () => {
     setShowChangePasswordModal(false)
-    // Redirect based on user role
-    const userRole = user?.role
-    if (userRole === 'employee') {
-      window.location.href = '/employee'
-    } else {
-      window.location.href = '/'
-    }
+    // Set flag to trigger redirect in useEffect
+    setShouldRedirect(true)
   }
 
   return (

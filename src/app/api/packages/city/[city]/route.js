@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabaseClient'
+import { supabaseServer } from '../../../../../lib/supabaseServer.js'
 
 // GET - Fetch packages filtered by city slug (matches destination ILIKE '%city%')
 export async function GET(request, { params }) {
   try {
-    const { city } = params
+    const { city } = await params
     if (!city) {
       return NextResponse.json({ error: 'city is required' }, { status: 400 })
     }
 
     const pattern = `%${city}%`
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('packages')
       .select('*')
       .ilike('destination', pattern)
