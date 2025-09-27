@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import logo from '../../assets/images/logo.png'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 import {
   HomeIcon,
   UserGroupIcon,
@@ -64,6 +65,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(false)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const location = useLocation()
+  const navigate = useNavigate()
+  const { user, logout, isAuthenticated } = useAuth()
 
   // Search functionality
   const handleSearch = (query: string) => {
@@ -72,6 +75,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     if (window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('searchQuery', { detail: query }))
     }
+  }
+
+  // Handle logout
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
+  // Don't render layout for auth pages
+  if (!isAuthenticated && (location.pathname === '/login' || location.pathname === '/signup')) {
+    return <>{children}</>
   }
 
   return (
@@ -172,15 +186,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex-shrink-0 p-2 border-t border-gray-100">
           <div className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'space-x-2'}`}>
             <div className="h-7 w-7 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-medium">A</span>
+              <span className="text-white text-xs font-medium">
+                {user?.name?.charAt(0).toUpperCase() || 'U'}
+              </span>
             </div>
             {!sidebarCollapsed && (
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-gray-900 truncate">Admin</p>
-                <p className="text-[10px] text-gray-500 truncate">Administrator</p>
+                <p className="text-xs font-medium text-gray-900 truncate">{user?.name || 'User'}</p>
+                <p className="text-[10px] text-gray-500 truncate capitalize">{user?.role || 'User'}</p>
               </div>
             )}
           </div>
+          {!sidebarCollapsed && (
+            <button
+              onClick={handleLogout}
+              className="w-full mt-2 px-2 py-1 text-xs text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+            >
+              Sign out
+            </button>
+          )}
         </div>
       </div>
 
@@ -226,10 +250,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 bg-red-500 rounded-full"></span>
                 </button>
                 
-                {/* User Avatar */}
-                <div className="h-6 w-6 bg-primary rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs font-medium">A</span>
-                </div>
+                       {/* User Avatar */}
+                       <div className="h-6 w-6 bg-primary rounded-full flex items-center justify-center">
+                         <span className="text-white text-xs font-medium">
+                           {user?.name?.charAt(0).toUpperCase() || 'U'}
+                         </span>
+                       </div>
               </div>
             </div>
           </div>

@@ -10,20 +10,68 @@ import Blogs from '../pages/cms/Blogs'
 import Settings from '../pages/Settings'
 import WebsiteEdit from '../pages/cms/WebsiteEdit'
 import Employees from '../pages/Employees'
+import Login from '../../pages/Login'
+import Signup from '../../pages/Signup'
+import ProtectedRoute from '../auth/ProtectedRoute'
 
 const Routers: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<AdminDashboard />} />
-      <Route path="/leads" element={<Leads />} />
-      <Route path="/bookings" element={<Bookings />} />
-      <Route path="/payments" element={<Payments />} />
-      <Route path="/reports" element={<Reports />} />
-      <Route path="/employees" element={<Employees />} />
-      <Route path="/packages" element={<Packages />} />
-      <Route path="/blogs" element={<Blogs />} />
-      <Route path="/website-edit" element={<WebsiteEdit />} />
-      <Route path="/settings" element={<Settings />} />
+      {/* Public routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+      
+      {/* Protected routes */}
+      <Route path="/" element={
+        <ProtectedRoute>
+          <AdminDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/leads" element={
+        <ProtectedRoute>
+          <Leads />
+        </ProtectedRoute>
+      } />
+      <Route path="/bookings" element={
+        <ProtectedRoute>
+          <Bookings />
+        </ProtectedRoute>
+      } />
+      <Route path="/payments" element={
+        <ProtectedRoute>
+          <Payments />
+        </ProtectedRoute>
+      } />
+      <Route path="/reports" element={
+        <ProtectedRoute>
+          <Reports />
+        </ProtectedRoute>
+      } />
+      <Route path="/employees" element={
+        <ProtectedRoute requiredRole="admin">
+          <Employees />
+        </ProtectedRoute>
+      } />
+      <Route path="/packages" element={
+        <ProtectedRoute>
+          <Packages />
+        </ProtectedRoute>
+      } />
+      <Route path="/blogs" element={
+        <ProtectedRoute>
+          <Blogs />
+        </ProtectedRoute>
+      } />
+      <Route path="/website-edit" element={
+        <ProtectedRoute>
+          <WebsiteEdit />
+        </ProtectedRoute>
+      } />
+      <Route path="/settings" element={
+        <ProtectedRoute requiredRole="admin">
+          <Settings />
+        </ProtectedRoute>
+      } />
     </Routes>
   )
 }
